@@ -1,0 +1,23 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/intelligent_resume?useUnicode=true&characterEncoding=utf8&useSSL=false
+    username: root
+    password: your_production_password
+    hikari:
+      minimum-idle: 10
+      maximum-pool-size: 50
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+
+# 生产环境日志级别
+logging:
+  level:
+    root: WARN
+    app.intelligent.resume: INFO

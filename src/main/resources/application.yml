@@ -1,0 +1,51 @@
+spring:
+  profiles:
+    active: dev
+  application:
+    name: intelligent-resume
+
+  # 文件上传配置
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+# MyBatis-Plus配置
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+      id-type: auto
+  mapper-locations: classpath:mapper/**/*.xml
+
+# JWT配置
+jwt:
+  secret: IntelligentResumeSecretKeyForJWT2024MustBeLongEnoughForHS256Algorithm
+  expiration: 86400000  # 24小时（毫秒）
+  refresh-expiration: 604800000  # 7天（毫秒）
+
+# Swagger配置
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  packages-to-scan: app.intelligent.resume.controller
+  paths-to-match: /api/**
+
+# 日志配置
+logging:
+  level:
+    root: INFO
+    app.intelligent.resume: DEBUG
+  file:
+    name: logs/intelligent-resume.log
