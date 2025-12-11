@@ -56,31 +56,56 @@ public class AuthServiceImpl implements IAuthService {
 
     @Override
     public LoginResponse login(LoginRequest request) {
-        // 认证
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getUsername(),
-                        request.getPassword()
-                )
-        );
+        log.info("用户登录, phone={}", request.getPhone());
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        // 1. 验证手机号格式
+        PhoneValidator.validate(request.getPhone());
 
-        // 生成Token
-        String accessToken = tokenProvider.generateToken(authentication);
-        String refreshToken = tokenProvider.generateRefreshToken(request.getUsername());
+        // 2. 检查用户是否存在
+        User user = userService.getByPhone(request.getPhone());
+        if (user == null) {
+            log.warn("登录失败，手机号未注册, phone={}", request.getPhone());
+            throw new BusinessException(ResultCode.PHONE_NOT_REGISTERED);
+        }
 
-        // 查询用户信息
-        User user = userService.getByUsername(request.getUsername());
-        UserResponse userResponse = BeanUtil.copyProperties(user, UserResponse.class);
+        // 3. 检查用户状态
+        if (user.getStatus() == 0) {
+            log.warn("登录失败，账号已被禁用, phone={}", request.getPhone());
+            throw new BusinessException(ResultCode.ACCOUNT_DISABLED);
+        }
 
-        return LoginResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .tokenType("Bearer")
-                .expiresIn(expiration)
-                .userInfo(userResponse)
-                .build();
+        try {
+            // 4. 认证
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getPhone(),
+                            request.getPassword()
+                    )
+            );
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            // 5. 生成Token
+            String accessToken = tokenProvider.generateToken(authentication);
+            String refreshToken = tokenProvider.generateRefreshToken(request.getPhone());
+
+            // 6. 构建返回信息
+            UserResponse userResponse = BeanUtil.copyProperties(user, UserResponse.class);
+
+            log.info("用户登录成功, phone={}, userId={}", request.getPhone(), user.getId());
+
+            return LoginResponse.builder()
+                    .accessToken(accessToken)
+                    .refreshToken(refreshToken)
+                    .tokenType("Bearer")
+                    .expiresIn(expiration)
+                    .userInfo(userResponse)
+                    .build();
+
+        } catch (Exception e) {
+            log.warn("登录失败，密码错误, phone={}", request.getPhone());
+            throw new BusinessException(ResultCode.PASSWORD_ERROR);
+        }
     }
 
     @Override
@@ -96,6 +121,11 @@ public class AuthServiceImpl implements IAuthService {
             throw new BusinessException("邮箱已被使用");
         }
 
+        // 检查手机号是否已注册
+        if (request.getPhone() != null && userService.getByPhone(request.getPhone()) != null) {
+            throw new BusinessException(ResultCode.PHONE_ALREADY_REGISTERED);
+        }
+
         // 创建用户
         User user = new User();
         user.setUsername(request.getUsername());
@@ -108,9 +138,9 @@ public class AuthServiceImpl implements IAuthService {
 
         userService.save(user);
 
-        // 自动登录
+        // 自动登录（使用手机号登录）
         LoginRequest loginRequest = new LoginRequest();
-        loginRequest.setUsername(request.getUsername());
+        loginRequest.setPhone(request.getPhone());
         loginRequest.setPassword(request.getPassword());
 
         return login(loginRequest);
@@ -123,15 +153,18 @@ public class AuthServiceImpl implements IAuthService {
             throw new BusinessException(ResultCode.TOKEN_INVALID);
         }
 
-        // 从Token中获取用户名
-        String username = tokenProvider.getUsernameFromToken(refreshToken);
+        // 从Token中获取手机号（之前存储的是手机号）
+        String phone = tokenProvider.getUsernameFromToken(refreshToken);
 
         // 生成新的访问Token
-        String newAccessToken = tokenProvider.generateToken(username);
-        String newRefreshToken = tokenProvider.generateRefreshToken(username);
+        String newAccessToken = tokenProvider.generateToken(phone);
+        String newRefreshToken = tokenProvider.generateRefreshToken(phone);
 
-        // 查询用户信息
-        User user = userService.getByUsername(username);
+        // 查询用户信息（通过手机号）
+        User user = userService.getByPhone(phone);
+        if (user == null) {
+            throw new BusinessException(ResultCode.USER_NOT_EXIST);
+        }
         UserResponse userResponse = BeanUtil.copyProperties(user, UserResponse.class);
 
         return LoginResponse.builder()
