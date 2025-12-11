@@ -13,6 +13,7 @@ import java.util.Collections;
 
 /**
  * 用户详情服务实现类
+ * 支持通过手机号加载用户信息
  *
  * @author Intelligent Resume Team
  */
@@ -22,20 +23,29 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
 
+    /**
+     * 通过手机号加载用户信息
+     * @param phone 手机号（参数名为username是因为Spring Security接口定义，实际传入手机号）
+     */
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // 根据用户名查询用户
-        User user = userRepository.selectByUsername(username);
+    public UserDetails loadUserByUsername(String phone) throws UsernameNotFoundException {
+        // 根据手机号查询用户
+        User user = userRepository.selectByPhone(phone);
 
         if (user == null) {
-            throw new UsernameNotFoundException("用户不存在: " + username);
+            throw new UsernameNotFoundException("该手机号未注册: " + phone);
+        }
+
+        // 检查用户状态
+        if (user.getStatus() == 0) {
+            throw new UsernameNotFoundException("该账号已被禁用");
         }
 
         // 根据用户类型设置角色
         String role = getUserRole(user.getUserType());
 
         return org.springframework.security.core.userdetails.User.builder()
-                .username(user.getUsername())
+                .username(user.getPhone()) // 使用手机号作为用户名
                 .password(user.getPassword())
                 .authorities(Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role)))
                 .accountExpired(false)
