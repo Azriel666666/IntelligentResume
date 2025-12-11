@@ -196,3 +196,8 @@
 2025-12-11 19:44:41.091 [http-nio-8080-exec-3] INFO  a.i.resume.service.impl.VerifyCodeServiceImpl - 验证码验证成功, phone=13800138000
 2025-12-11 19:44:47.222 [http-nio-8080-exec-2] INFO  a.i.resume.service.impl.VerifyCodeServiceImpl - 删除验证码, phone=13800138000, type=BIND_PHONE
 2025-12-11 19:44:47.222 [http-nio-8080-exec-2] INFO  a.intelligent.resume.service.impl.UserServiceImpl - 用户修改手机号成功, userId=2, oldPhone=13800138001, newPhone=13800138000
+2025-12-11 19:52:45.463 [http-nio-8080-exec-9] INFO  a.intelligent.resume.service.impl.AuthServiceImpl - 用户登录, phone=13800000001
+2025-12-11 19:56:42.819 [http-nio-8080-exec-6] INFO  a.intelligent.resume.service.impl.AuthServiceImpl - 用户登录, phone=13800000001
+2025-12-11 19:56:42.898 [http-nio-8080-exec-6] INFO  a.intelligent.resume.service.impl.AuthServiceImpl - 用户登录成功, phone=13800000001, userId=1
+2025-12-11 20:10:48.757 [http-nio-8080-exec-4] INFO  a.intelligent.resume.service.impl.UserServiceImpl - 更新用户状态成功, userId=3, status=0
+2025-12-11 20:11:03.824 [http-nio-8080-exec-8] INFO  a.intelligent.resume.service.impl.UserServiceImpl - 更新用户状态成功, userId=3, status=1
