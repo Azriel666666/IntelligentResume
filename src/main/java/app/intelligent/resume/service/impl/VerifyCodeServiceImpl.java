@@ -280,4 +280,21 @@ public class VerifyCodeServiceImpl implements IVerifyCodeService {
         LocalDateTime endOfDay = LocalDateTime.now().withHour(23).withMinute(59).withSecond(59);
         return java.sql.Timestamp.valueOf(endOfDay);
     }
+
+    @Override
+    public boolean isCodeVerified(String phone, String typeCode) {
+        VerifyCodeType type = VerifyCodeType.getByCode(typeCode);
+        if (type == null) {
+            return false;
+        }
+        return isVerified(phone, type);
+    }
+
+    @Override
+    public void clearVerifiedStatus(String phone, String typeCode) {
+        VerifyCodeType type = VerifyCodeType.getByCode(typeCode);
+        if (type != null) {
+            deleteVerifyCode(phone, type);
+        }
+    }
 }

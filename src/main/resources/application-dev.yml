@@ -31,6 +31,15 @@ spring:
           max-idle: 8
           min-idle: 0
 
+# MinIO配置
+minio:
+  endpoint: http://localhost:9005
+  access-key: root
+  secret-key: 12345678
+  bucket-name: avatar
+  # 文件访问URL前缀（公开访问时使用）
+  url-prefix: http://localhost:9005/avatar
+
 # 开发环境日志级别
 logging:
   level:
