@@ -1,6 +1,5 @@
 package app.intelligent.resume.security;
 
-import app.intelligent.resume.entity.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,7 +19,7 @@ public class SecurityUtils {
     }
 
     /**
-     * 获取当前登录用户名
+     * 获取当前登录用户名（手机号）
      */
     public static String getCurrentUsername() {
         Authentication authentication = getAuthentication();
@@ -32,11 +31,20 @@ public class SecurityUtils {
     }
 
     /**
+     * 获取当前登录用户手机号
+     * 在当前系统中，username存储的就是手机号
+     */
+    public static String getCurrentPhone() {
+        return getCurrentUsername();
+    }
+
+    /**
      * 判断是否已认证
      */
     public static boolean isAuthenticated() {
         Authentication authentication = getAuthentication();
-        return authentication != null && authentication.isAuthenticated();
+        return authentication != null && authentication.isAuthenticated()
+               && !"anonymousUser".equals(authentication.getPrincipal());
     }
 
     /**

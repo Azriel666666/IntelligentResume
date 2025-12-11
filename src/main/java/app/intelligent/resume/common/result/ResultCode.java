@@ -97,6 +97,21 @@ public enum ResultCode {
      */
     FILE_TYPE_NOT_SUPPORT(4002, "文件类型不支持"),
 
+    /**
+     * 文件为空
+     */
+    FILE_EMPTY(4003, "上传文件不能为空"),
+
+    /**
+     * 文件URL生成失败
+     */
+    FILE_URL_GENERATE_FAILED(4004, "文件访问地址生成失败"),
+
+    /**
+     * 文件大小超限
+     */
+    FILE_SIZE_EXCEEDED(4005, "文件大小超过限制"),
+
     // ========== 验证码相关错误码 (5000-5099) ==========
 
     /**
@@ -192,7 +207,34 @@ public enum ResultCode {
     /**
      * 密码包含重复字符
      */
-    PASSWORD_REPEATED_CHAR(5019, "密码不能包含过多重复字符");
+    PASSWORD_REPEATED_CHAR(5019, "密码不能包含过多重复字符"),
+
+    // ========== 用户模块相关错误码 (1010-1099) ==========
+
+    /**
+     * 原密码错误
+     */
+    OLD_PASSWORD_ERROR(1010, "原密码错误"),
+
+    /**
+     * 新密码不能与原密码相同
+     */
+    NEW_PASSWORD_SAME_AS_OLD(1011, "新密码不能与原密码相同"),
+
+    /**
+     * 手机号已被其他用户使用
+     */
+    PHONE_ALREADY_USED(1012, "该手机号已被其他用户使用"),
+
+    /**
+     * 用户未登录
+     */
+    USER_NOT_LOGIN(1013, "用户未登录"),
+
+    /**
+     * 用户状态无效
+     */
+    USER_STATUS_INVALID(1014, "用户状态无效");
 
     private final Integer code;
     private final String message;
