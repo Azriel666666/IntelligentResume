@@ -1,0 +1,65 @@
+2025-12-10 15:49:31.265 [main] ERROR org.apache.catalina.core.AprLifecycleListener - An incompatible version [1.2.27] of the Apache Tomcat Native library is installed, while Tomcat requires version [1.2.34]
+2025-12-10 15:49:31.639 [main] ERROR o.s.boot.web.embedded.tomcat.TomcatStarter - Error starting Tomcat context. Exception: org.springframework.beans.factory.UnsatisfiedDependencyException. Message: Error creating bean with name 'jwtAuthenticationFilter' defined in file [E:\AI_Project\IntelligentResume\IntelligentResume_back\target\classes\app\intelligent\resume\security\JwtAuthenticationFilter.class]: Unsatisfied dependency expressed through constructor parameter 1: Error creating bean with name 'userDetailsServiceImpl' defined in file [E:\AI_Project\IntelligentResume\IntelligentResume_back\target\classes\app\intelligent\resume\security\UserDetailsServiceImpl.class]: Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'app.intelligent.resume.repository.UserRepository' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
+2025-12-10 15:49:31.704 [main] ERROR o.s.b.diagnostics.LoggingFailureAnalysisReporter - 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Parameter 0 of constructor in app.intelligent.resume.security.UserDetailsServiceImpl required a bean of type 'app.intelligent.resume.repository.UserRepository' that could not be found.
+
+
+Action:
+
+Consider defining a bean of type 'app.intelligent.resume.repository.UserRepository' in your configuration.
+
+2025-12-10 15:56:41.230 [main] ERROR org.springframework.boot.SpringApplication - Application run failed
+java.lang.IllegalArgumentException: Invalid value type for attribute 'factoryBeanObjectType': java.lang.String
+	at org.springframework.beans.factory.support.FactoryBeanRegistrySupport.getTypeForFactoryBeanFromAttributes(FactoryBeanRegistrySupport.java:86)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.getTypeForFactoryBean(AbstractAutowireCapableBeanFactory.java:838)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.isTypeMatch(AbstractBeanFactory.java:620)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doGetBeanNamesForType(DefaultListableBeanFactory.java:573)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.getBeanNamesForType(DefaultListableBeanFactory.java:532)
+	at org.springframework.context.support.PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors(PostProcessorRegistrationDelegate.java:138)
+	at org.springframework.context.support.AbstractApplicationContext.invokeBeanFactoryPostProcessors(AbstractApplicationContext.java:775)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:597)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:753)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:455)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:323)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1342)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1331)
+	at app.intelligent.resume.IntelligentResumeApplication.main(IntelligentResumeApplication.java:18)
+2025-12-10 15:57:19.244 [main] ERROR org.springframework.boot.SpringApplication - Application run failed
+java.lang.IllegalArgumentException: Invalid value type for attribute 'factoryBeanObjectType': java.lang.String
+	at org.springframework.beans.factory.support.FactoryBeanRegistrySupport.getTypeForFactoryBeanFromAttributes(FactoryBeanRegistrySupport.java:86)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.getTypeForFactoryBean(AbstractAutowireCapableBeanFactory.java:838)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.isTypeMatch(AbstractBeanFactory.java:620)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doGetBeanNamesForType(DefaultListableBeanFactory.java:573)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.getBeanNamesForType(DefaultListableBeanFactory.java:532)
+	at org.springframework.context.support.PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors(PostProcessorRegistrationDelegate.java:138)
+	at org.springframework.context.support.AbstractApplicationContext.invokeBeanFactoryPostProcessors(AbstractApplicationContext.java:775)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:597)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:753)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:455)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:323)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1342)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1331)
+	at app.intelligent.resume.IntelligentResumeApplication.main(IntelligentResumeApplication.java:18)
+2025-12-10 16:01:51.397 [main] ERROR org.apache.catalina.core.AprLifecycleListener - An incompatible version [1.2.27] of the Apache Tomcat Native library is installed, while Tomcat requires version [1.2.34]
+2025-12-10 16:15:09.725 [http-nio-8080-exec-2] ERROR a.i.resume.common.exception.GlobalExceptionHandler - 参数校验失败: 用户名不能为空
+2025-12-10 16:56:14.669 [http-nio-8080-exec-4] ERROR a.i.resume.common.exception.GlobalExceptionHandler - 参数校验失败: 验证码类型不能为空
+2025-12-10 16:58:04.656 [http-nio-8080-exec-8] ERROR a.i.resume.common.exception.GlobalExceptionHandler - 业务异常: 密码不能包含过多重复字符
+2025-12-10 16:58:19.928 [http-nio-8080-exec-9] ERROR a.i.resume.common.exception.GlobalExceptionHandler - 业务异常: 密码不能包含过多重复字符
+2025-12-10 16:58:34.241 [http-nio-8080-exec-10] ERROR a.i.resume.common.exception.GlobalExceptionHandler - 业务异常: 密码不能包含连续字符
+2025-12-10 16:58:58.729 [http-nio-8080-exec-1] ERROR a.i.resume.common.exception.GlobalExceptionHandler - 业务异常: 两次输入的密码不一致
+2025-12-10 16:59:06.040 [http-nio-8080-exec-2] ERROR a.i.resume.common.exception.GlobalExceptionHandler - 业务异常: 请先验证验证码
+2025-12-10 16:59:40.948 [http-nio-8080-exec-3] ERROR a.i.resume.common.exception.GlobalExceptionHandler - 业务异常: 验证码不存在或已过期，请重新获取
+2025-12-10 17:00:05.172 [http-nio-8080-exec-4] ERROR a.i.resume.common.exception.GlobalExceptionHandler - 业务异常: 请先验证验证码
+2025-12-10 17:05:03.987 [http-nio-8080-exec-2] ERROR a.i.resume.common.exception.GlobalExceptionHandler - 业务异常: 密码不能包含过多重复字符
+2025-12-10 17:05:26.806 [http-nio-8080-exec-3] ERROR a.i.resume.common.exception.GlobalExceptionHandler - 业务异常: 参数校验失败
+2025-12-10 17:05:41.694 [http-nio-8080-exec-5] ERROR a.i.resume.common.exception.GlobalExceptionHandler - 业务异常: 请勿重复提交
+2025-12-10 17:05:56.770 [http-nio-8080-exec-4] ERROR a.i.resume.common.exception.GlobalExceptionHandler - 业务异常: 参数校验失败

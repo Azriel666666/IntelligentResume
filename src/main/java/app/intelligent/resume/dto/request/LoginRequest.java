@@ -13,11 +13,11 @@ import lombok.Data;
 @Schema(description = "登录请求")
 public class LoginRequest {
 
-    @Schema(description = "用户名", example = "admin")
-    @NotBlank(message = "用户名不能为空")
-    private String username;
+    @Schema(description = "手机号", example = "13800138000")
+    @NotBlank(message = "手机号不能为空")
+    private String phone;
 
-    @Schema(description = "密码", example = "admin123")
+    @Schema(description = "密码", example = "abc12345")
     @NotBlank(message = "密码不能为空")
     private String password;
 }

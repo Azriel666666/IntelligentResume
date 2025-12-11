@@ -1,110 +1,56 @@
-2025-12-10 15:49:29.415 [background-preinit] INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
-2025-12-10 15:49:29.446 [main] INFO  a.intelligent.resume.IntelligentResumeApplication - Starting IntelligentResumeApplication using Java 21.0.9 with PID 39568 (E:\AI_Project\IntelligentResume\IntelligentResume_back\target\classes started by Lenovo in E:\AI_Project\IntelligentResume\IntelligentResume_back)
-2025-12-10 15:49:29.447 [main] INFO  a.intelligent.resume.IntelligentResumeApplication - The following 1 profile is active: "dev"
-2025-12-10 15:49:30.561 [main] INFO  o.s.d.r.config.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
-2025-12-10 15:49:30.564 [main] INFO  o.s.d.r.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
-2025-12-10 15:49:30.604 [main] INFO  o.s.d.r.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 27 ms. Found 0 Redis repository interfaces.
-2025-12-10 15:49:31.466 [main] INFO  o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
-2025-12-10 15:49:31.474 [main] INFO  org.apache.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
-2025-12-10 15:49:31.476 [main] INFO  org.apache.catalina.core.StandardService - Starting service [Tomcat]
-2025-12-10 15:49:31.476 [main] INFO  org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.16]
-2025-12-10 15:49:31.546 [main] INFO  o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
-2025-12-10 15:49:31.546 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 2055 ms
-2025-12-10 15:49:31.664 [main] INFO  org.apache.catalina.core.StandardService - Stopping service [Tomcat]
-2025-12-10 15:49:31.687 [main] INFO  o.s.b.a.logging.ConditionEvaluationReportLogger - 
-
-Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
-2025-12-10 15:56:39.947 [background-preinit] INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
-2025-12-10 15:56:39.989 [main] INFO  a.intelligent.resume.IntelligentResumeApplication - Starting IntelligentResumeApplication using Java 21.0.9 with PID 36364 (E:\AI_Project\IntelligentResume\IntelligentResume_back\target\classes started by Lenovo in E:\AI_Project\IntelligentResume\IntelligentResume_back)
-2025-12-10 15:56:39.991 [main] INFO  a.intelligent.resume.IntelligentResumeApplication - The following 1 profile is active: "dev"
-2025-12-10 15:56:41.069 [main] INFO  o.s.d.r.config.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
-2025-12-10 15:56:41.071 [main] INFO  o.s.d.r.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
-2025-12-10 15:56:41.110 [main] INFO  o.s.d.r.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 27 ms. Found 0 Redis repository interfaces.
-2025-12-10 15:56:41.215 [main] INFO  o.s.b.a.logging.ConditionEvaluationReportLogger - 
-
-Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
-2025-12-10 15:57:17.984 [background-preinit] INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
-2025-12-10 15:57:18.016 [main] INFO  a.intelligent.resume.IntelligentResumeApplication - Starting IntelligentResumeApplication using Java 21.0.9 with PID 36832 (E:\AI_Project\IntelligentResume\IntelligentResume_back\target\classes started by Lenovo in E:\AI_Project\IntelligentResume\IntelligentResume_back)
-2025-12-10 15:57:18.017 [main] INFO  a.intelligent.resume.IntelligentResumeApplication - The following 1 profile is active: "dev"
-2025-12-10 15:57:19.092 [main] INFO  o.s.d.r.config.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
-2025-12-10 15:57:19.095 [main] INFO  o.s.d.r.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
-2025-12-10 15:57:19.131 [main] INFO  o.s.d.r.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 24 ms. Found 0 Redis repository interfaces.
-2025-12-10 15:57:19.230 [main] INFO  o.s.b.a.logging.ConditionEvaluationReportLogger - 
-
-Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
-2025-12-10 16:01:49.773 [background-preinit] INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
-2025-12-10 16:01:49.807 [main] INFO  a.intelligent.resume.IntelligentResumeApplication - Starting IntelligentResumeApplication using Java 21.0.9 with PID 10884 (E:\AI_Project\IntelligentResume\IntelligentResume_back\target\classes started by Lenovo in E:\AI_Project\IntelligentResume\IntelligentResume_back)
-2025-12-10 16:01:49.808 [main] INFO  a.intelligent.resume.IntelligentResumeApplication - The following 1 profile is active: "dev"
-2025-12-10 16:01:50.850 [main] INFO  o.s.d.r.config.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
-2025-12-10 16:01:50.852 [main] INFO  o.s.d.r.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
-2025-12-10 16:01:50.887 [main] INFO  o.s.d.r.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 23 ms. Found 0 Redis repository interfaces.
-2025-12-10 16:01:51.574 [main] INFO  o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
-2025-12-10 16:01:51.580 [main] INFO  org.apache.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
-2025-12-10 16:01:51.581 [main] INFO  org.apache.catalina.core.StandardService - Starting service [Tomcat]
-2025-12-10 16:01:51.582 [main] INFO  org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.16]
-2025-12-10 16:01:51.647 [main] INFO  o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
-2025-12-10 16:01:51.647 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1792 ms
-2025-12-10 16:01:52.338 [main] INFO  org.redisson.Version - Redisson 3.25.0
-2025-12-10 16:01:52.666 [redisson-netty-2-5] INFO  o.r.connection.pool.MasterPubSubConnectionPool - 1 connections initialized for localhost/127.0.0.1:6379
-2025-12-10 16:01:52.678 [redisson-netty-2-14] INFO  org.redisson.connection.pool.MasterConnectionPool - 5 connections initialized for localhost/127.0.0.1:6379
-2025-12-10 16:01:53.370 [main] INFO  o.s.b.actuate.endpoint.web.EndpointLinksResolver - Exposing 1 endpoint(s) beneath base path '/actuator'
-2025-12-10 16:01:53.416 [main] INFO  o.s.security.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@590f806a, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@2267b0bb, org.springframework.security.web.context.SecurityContextHolderFilter@3e5ed0d4, org.springframework.security.web.header.HeaderWriterFilter@36c1b6ff, org.springframework.security.web.authentication.logout.LogoutFilter@3958db82, app.intelligent.resume.security.JwtAuthenticationFilter@e7d0db2, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@56f19f36, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@2faae7f6, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@20505460, org.springframework.security.web.session.SessionManagementFilter@8aafd70, org.springframework.security.web.access.ExceptionTranslationFilter@11678469, org.springframework.security.web.access.intercept.AuthorizationFilter@70d16858]
-2025-12-10 16:01:53.876 [main] INFO  org.apache.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
-2025-12-10 16:01:53.888 [main] INFO  o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
-2025-12-10 16:01:53.900 [main] INFO  a.intelligent.resume.IntelligentResumeApplication - Started IntelligentResumeApplication in 4.704 seconds (process running for 5.659)
-2025-12-10 16:01:54.140 [RMI TCP Connection(1)-198.18.0.1] INFO  o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
-2025-12-10 16:01:54.140 [RMI TCP Connection(1)-198.18.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
-2025-12-10 16:01:54.142 [RMI TCP Connection(1)-198.18.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Completed initialization in 2 ms
-2025-12-10 16:01:54.154 [RMI TCP Connection(3)-198.18.0.1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
-2025-12-10 16:01:54.348 [RMI TCP Connection(3)-198.18.0.1] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.jdbc.JDBC4Connection@535ff9ca
-2025-12-10 16:01:54.352 [RMI TCP Connection(3)-198.18.0.1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
-2025-12-10 16:32:21.928 [http-nio-8080-exec-9] INFO  a.i.resume.service.impl.VerifyCodeServiceImpl - 开始发送验证码, phone=18241716773, type=REGISTER, requestId=uuid-001, ip=0:0:0:0:0:0:0:1
-2025-12-10 16:32:21.959 [http-nio-8080-exec-9] INFO  a.i.resume.service.impl.VerifyCodeServiceImpl - 生成验证码成功, phone=18241716773, code=886441
-2025-12-10 16:32:21.959 [http-nio-8080-exec-9] INFO  a.intelligent.resume.service.impl.SmsServiceImpl - === [Mock SMS] 发送验证码 ===
-2025-12-10 16:32:21.959 [http-nio-8080-exec-9] INFO  a.intelligent.resume.service.impl.SmsServiceImpl - 手机号: 18241716773
-2025-12-10 16:32:21.959 [http-nio-8080-exec-9] INFO  a.intelligent.resume.service.impl.SmsServiceImpl - 验证码: 886441
-2025-12-10 16:32:21.959 [http-nio-8080-exec-9] INFO  a.intelligent.resume.service.impl.SmsServiceImpl - 类型: 注册验证码
-2025-12-10 16:32:21.959 [http-nio-8080-exec-9] INFO  a.intelligent.resume.service.impl.SmsServiceImpl - 短信内容: 【智能简历】您的注册验证码验证码为：886441，10分钟内有效，请勿泄露给他人。
-2025-12-10 16:32:21.959 [http-nio-8080-exec-9] INFO  a.intelligent.resume.service.impl.SmsServiceImpl - ========================
-2025-12-10 16:32:21.967 [http-nio-8080-exec-9] INFO  a.i.resume.service.impl.VerifyCodeServiceImpl - 验证码发送成功, phone=18241716773
-2025-12-10 16:35:18.200 [http-nio-8080-exec-2] INFO  a.i.resume.service.impl.VerifyCodeServiceImpl - 开始验证验证码, phone=18241716773, inputCode=886441, type=REGISTER
-2025-12-10 16:35:18.212 [http-nio-8080-exec-2] INFO  a.i.resume.service.impl.VerifyCodeServiceImpl - 验证码验证成功, phone=18241716773
-2025-12-10 16:58:04.646 [http-nio-8080-exec-8] INFO  a.intelligent.resume.service.impl.AuthServiceImpl - 开始手机号注册流程, phone=18241716773, ip=0:0:0:0:0:0:0:1
-2025-12-10 16:58:19.927 [http-nio-8080-exec-9] INFO  a.intelligent.resume.service.impl.AuthServiceImpl - 开始手机号注册流程, phone=18241716773, ip=0:0:0:0:0:0:0:1
-2025-12-10 16:58:34.240 [http-nio-8080-exec-10] INFO  a.intelligent.resume.service.impl.AuthServiceImpl - 开始手机号注册流程, phone=18241716773, ip=0:0:0:0:0:0:0:1
-2025-12-10 16:58:58.728 [http-nio-8080-exec-1] INFO  a.intelligent.resume.service.impl.AuthServiceImpl - 开始手机号注册流程, phone=18241716773, ip=0:0:0:0:0:0:0:1
-2025-12-10 16:59:06.038 [http-nio-8080-exec-2] INFO  a.intelligent.resume.service.impl.AuthServiceImpl - 开始手机号注册流程, phone=18241716773, ip=0:0:0:0:0:0:0:1
-2025-12-10 16:59:40.946 [http-nio-8080-exec-3] INFO  a.i.resume.service.impl.VerifyCodeServiceImpl - 开始验证验证码, phone=18241716773, inputCode=886441, type=REGISTER
-2025-12-10 16:59:49.176 [http-nio-8080-exec-5] INFO  a.i.resume.service.impl.VerifyCodeServiceImpl - 开始发送验证码, phone=18241716773, type=REGISTER, requestId=uuid-001, ip=0:0:0:0:0:0:0:1
-2025-12-10 16:59:49.180 [http-nio-8080-exec-5] INFO  a.i.resume.service.impl.VerifyCodeServiceImpl - 生成验证码成功, phone=18241716773, code=326213
-2025-12-10 16:59:49.180 [http-nio-8080-exec-5] INFO  a.intelligent.resume.service.impl.SmsServiceImpl - === [Mock SMS] 发送验证码 ===
-2025-12-10 16:59:49.180 [http-nio-8080-exec-5] INFO  a.intelligent.resume.service.impl.SmsServiceImpl - 手机号: 18241716773
-2025-12-10 16:59:49.180 [http-nio-8080-exec-5] INFO  a.intelligent.resume.service.impl.SmsServiceImpl - 验证码: 326213
-2025-12-10 16:59:49.180 [http-nio-8080-exec-5] INFO  a.intelligent.resume.service.impl.SmsServiceImpl - 类型: 注册验证码
-2025-12-10 16:59:49.181 [http-nio-8080-exec-5] INFO  a.intelligent.resume.service.impl.SmsServiceImpl - 短信内容: 【智能简历】您的注册验证码验证码为：326213，10分钟内有效，请勿泄露给他人。
-2025-12-10 16:59:49.181 [http-nio-8080-exec-5] INFO  a.intelligent.resume.service.impl.SmsServiceImpl - ========================
-2025-12-10 16:59:49.184 [http-nio-8080-exec-5] INFO  a.i.resume.service.impl.VerifyCodeServiceImpl - 验证码发送成功, phone=18241716773
-2025-12-10 17:00:05.170 [http-nio-8080-exec-4] INFO  a.intelligent.resume.service.impl.AuthServiceImpl - 开始手机号注册流程, phone=18241716773, ip=0:0:0:0:0:0:0:1
-2025-12-10 17:00:11.707 [http-nio-8080-exec-6] INFO  a.i.resume.service.impl.VerifyCodeServiceImpl - 开始验证验证码, phone=18241716773, inputCode=326213, type=REGISTER
-2025-12-10 17:00:11.709 [http-nio-8080-exec-6] INFO  a.i.resume.service.impl.VerifyCodeServiceImpl - 验证码验证成功, phone=18241716773
-2025-12-10 17:00:15.582 [http-nio-8080-exec-7] INFO  a.intelligent.resume.service.impl.AuthServiceImpl - 开始手机号注册流程, phone=18241716773, ip=0:0:0:0:0:0:0:1
-2025-12-10 17:00:15.729 [http-nio-8080-exec-7] INFO  a.intelligent.resume.service.impl.AuthServiceImpl - 用户注册成功, phone=18241716773, userId=4
-2025-12-10 17:00:15.731 [http-nio-8080-exec-7] INFO  a.i.resume.service.impl.VerifyCodeServiceImpl - 删除验证码, phone=18241716773, type=REGISTER
-2025-12-10 17:00:15.750 [http-nio-8080-exec-7] INFO  a.intelligent.resume.service.impl.AuthServiceImpl - 释放注册锁, phone=18241716773
-2025-12-10 17:04:26.788 [http-nio-8080-exec-10] INFO  a.i.resume.service.impl.VerifyCodeServiceImpl - 开始发送验证码, phone=13800138000, type=REGISTER, requestId=uuid-003, ip=0:0:0:0:0:0:0:1
-2025-12-10 17:04:26.791 [http-nio-8080-exec-10] INFO  a.i.resume.service.impl.VerifyCodeServiceImpl - 生成验证码成功, phone=13800138000, code=310420
-2025-12-10 17:04:26.791 [http-nio-8080-exec-10] INFO  a.intelligent.resume.service.impl.SmsServiceImpl - === [Mock SMS] 发送验证码 ===
-2025-12-10 17:04:26.791 [http-nio-8080-exec-10] INFO  a.intelligent.resume.service.impl.SmsServiceImpl - 手机号: 13800138000
-2025-12-10 17:04:26.791 [http-nio-8080-exec-10] INFO  a.intelligent.resume.service.impl.SmsServiceImpl - 验证码: 310420
-2025-12-10 17:04:26.791 [http-nio-8080-exec-10] INFO  a.intelligent.resume.service.impl.SmsServiceImpl - 类型: 注册验证码
-2025-12-10 17:04:26.791 [http-nio-8080-exec-10] INFO  a.intelligent.resume.service.impl.SmsServiceImpl - 短信内容: 【智能简历】您的注册验证码验证码为：310420，10分钟内有效，请勿泄露给他人。
-2025-12-10 17:04:26.791 [http-nio-8080-exec-10] INFO  a.intelligent.resume.service.impl.SmsServiceImpl - ========================
-2025-12-10 17:04:26.795 [http-nio-8080-exec-10] INFO  a.i.resume.service.impl.VerifyCodeServiceImpl - 验证码发送成功, phone=13800138000
-2025-12-10 17:04:45.878 [http-nio-8080-exec-1] INFO  a.i.resume.service.impl.VerifyCodeServiceImpl - 开始验证验证码, phone=13800138000, inputCode=310420, type=REGISTER
-2025-12-10 17:04:45.880 [http-nio-8080-exec-1] INFO  a.i.resume.service.impl.VerifyCodeServiceImpl - 验证码验证成功, phone=13800138000
-2025-12-10 17:05:03.986 [http-nio-8080-exec-2] INFO  a.intelligent.resume.service.impl.AuthServiceImpl - 开始手机号注册流程, phone=13800138000, ip=0:0:0:0:0:0:0:1
-2025-12-10 17:05:26.805 [http-nio-8080-exec-3] INFO  a.intelligent.resume.service.impl.AuthServiceImpl - 开始手机号注册流程, phone=13800138000, ip=0:0:0:0:0:0:0:1
-2025-12-10 17:05:41.693 [http-nio-8080-exec-5] INFO  a.i.resume.service.impl.VerifyCodeServiceImpl - 开始发送验证码, phone=13800138000, type=REGISTER, requestId=uuid-003, ip=0:0:0:0:0:0:0:1
-2025-12-10 17:05:56.768 [http-nio-8080-exec-4] INFO  a.intelligent.resume.service.impl.AuthServiceImpl - 开始手机号注册流程, phone=13800138000, ip=0:0:0:0:0:0:0:1
-2025-12-10 17:13:42.028 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
-2025-12-10 17:13:42.030 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2025-12-11 14:33:06.849 [background-preinit] INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2025-12-11 14:33:06.887 [main] INFO  a.intelligent.resume.IntelligentResumeApplication - Starting IntelligentResumeApplication using Java 21.0.9 with PID 7740 (E:\AI_Project\IntelligentResume\IntelligentResume_back\target\classes started by Lenovo in E:\AI_Project\IntelligentResume\IntelligentResume_back)
+2025-12-11 14:33:06.889 [main] INFO  a.intelligent.resume.IntelligentResumeApplication - The following 1 profile is active: "dev"
+2025-12-11 14:33:08.036 [main] INFO  o.s.d.r.config.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-12-11 14:33:08.039 [main] INFO  o.s.d.r.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2025-12-11 14:33:08.079 [main] INFO  o.s.d.r.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 23 ms. Found 0 Redis repository interfaces.
+2025-12-11 14:33:09.000 [main] INFO  o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2025-12-11 14:33:09.008 [main] INFO  org.apache.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2025-12-11 14:33:09.010 [main] INFO  org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2025-12-11 14:33:09.010 [main] INFO  org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.16]
+2025-12-11 14:33:09.078 [main] INFO  o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-12-11 14:33:09.078 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 2140 ms
+2025-12-11 14:33:09.754 [main] INFO  org.redisson.Version - Redisson 3.25.0
+2025-12-11 14:33:10.106 [redisson-netty-2-5] INFO  o.r.connection.pool.MasterPubSubConnectionPool - 1 connections initialized for localhost/127.0.0.1:6379
+2025-12-11 14:33:10.117 [redisson-netty-2-14] INFO  org.redisson.connection.pool.MasterConnectionPool - 5 connections initialized for localhost/127.0.0.1:6379
+2025-12-11 14:33:10.821 [main] INFO  o.s.b.actuate.endpoint.web.EndpointLinksResolver - Exposing 1 endpoint(s) beneath base path '/actuator'
+2025-12-11 14:33:10.864 [main] INFO  o.s.security.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@112b3298, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@51d2d336, org.springframework.security.web.context.SecurityContextHolderFilter@3cf7433e, org.springframework.security.web.header.HeaderWriterFilter@8aafd70, org.springframework.security.web.authentication.logout.LogoutFilter@63b2418e, app.intelligent.resume.security.JwtAuthenticationFilter@6fc7e828, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@3d0f4ac4, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@544733a4, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@90c01ab, org.springframework.security.web.session.SessionManagementFilter@36ec4071, org.springframework.security.web.access.ExceptionTranslationFilter@54d2887a, org.springframework.security.web.access.intercept.AuthorizationFilter@1e2bc241]
+2025-12-11 14:33:11.341 [main] INFO  org.apache.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2025-12-11 14:33:11.353 [main] INFO  o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2025-12-11 14:33:11.366 [main] INFO  a.intelligent.resume.IntelligentResumeApplication - Started IntelligentResumeApplication in 5.067 seconds (process running for 6.033)
+2025-12-11 14:33:11.919 [RMI TCP Connection(4)-192.168.14.1] INFO  o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-12-11 14:33:11.919 [RMI TCP Connection(4)-192.168.14.1] INFO  org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2025-12-11 14:33:11.920 [RMI TCP Connection(4)-192.168.14.1] INFO  org.springframework.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+2025-12-11 14:33:11.923 [RMI TCP Connection(3)-192.168.14.1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2025-12-11 14:33:12.122 [RMI TCP Connection(3)-192.168.14.1] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.jdbc.JDBC4Connection@7e918821
+2025-12-11 14:33:12.125 [RMI TCP Connection(3)-192.168.14.1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2025-12-11 14:41:37.880 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2025-12-11 14:41:37.885 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2025-12-11 14:41:45.295 [background-preinit] INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2025-12-11 14:41:45.329 [main] INFO  a.intelligent.resume.IntelligentResumeApplication - Starting IntelligentResumeApplication using Java 21.0.9 with PID 30936 (E:\AI_Project\IntelligentResume\IntelligentResume_back\target\classes started by Lenovo in E:\AI_Project\IntelligentResume\IntelligentResume_back)
+2025-12-11 14:41:45.330 [main] INFO  a.intelligent.resume.IntelligentResumeApplication - The following 1 profile is active: "dev"
+2025-12-11 14:41:46.471 [main] INFO  o.s.d.r.config.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-12-11 14:41:46.473 [main] INFO  o.s.d.r.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2025-12-11 14:41:46.510 [main] INFO  o.s.d.r.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 25 ms. Found 0 Redis repository interfaces.
+2025-12-11 14:41:47.306 [main] INFO  o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2025-12-11 14:41:47.313 [main] INFO  org.apache.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2025-12-11 14:41:47.315 [main] INFO  org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2025-12-11 14:41:47.315 [main] INFO  org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.16]
+2025-12-11 14:41:47.395 [main] INFO  o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-12-11 14:41:47.395 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 2006 ms
+2025-12-11 14:41:48.092 [main] INFO  org.redisson.Version - Redisson 3.25.0
+2025-12-11 14:41:48.449 [redisson-netty-2-5] INFO  o.r.connection.pool.MasterPubSubConnectionPool - 1 connections initialized for localhost/127.0.0.1:6379
+2025-12-11 14:41:48.466 [redisson-netty-2-14] INFO  org.redisson.connection.pool.MasterConnectionPool - 5 connections initialized for localhost/127.0.0.1:6379
+2025-12-11 14:41:49.230 [main] INFO  o.s.b.actuate.endpoint.web.EndpointLinksResolver - Exposing 1 endpoint(s) beneath base path '/actuator'
+2025-12-11 14:41:49.281 [main] INFO  o.s.security.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@923bf67, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@938e54a, org.springframework.security.web.context.SecurityContextHolderFilter@3c39c739, org.springframework.security.web.header.HeaderWriterFilter@6fc03cf6, org.springframework.security.web.authentication.logout.LogoutFilter@4d204b30, app.intelligent.resume.security.JwtAuthenticationFilter@6a6a2fdd, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@2e8eafb2, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@7a3f3bc4, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@220d7eb7, org.springframework.security.web.session.SessionManagementFilter@eef6e, org.springframework.security.web.access.ExceptionTranslationFilter@ab3b54, org.springframework.security.web.access.intercept.AuthorizationFilter@48590849]
+2025-12-11 14:41:49.837 [main] INFO  org.apache.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2025-12-11 14:41:49.857 [main] INFO  o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2025-12-11 14:41:49.874 [main] INFO  a.intelligent.resume.IntelligentResumeApplication - Started IntelligentResumeApplication in 5.094 seconds (process running for 6.448)
+2025-12-11 14:41:50.038 [RMI TCP Connection(2)-192.168.14.1] INFO  o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-12-11 14:41:50.039 [RMI TCP Connection(2)-192.168.14.1] INFO  org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2025-12-11 14:41:50.042 [RMI TCP Connection(2)-192.168.14.1] INFO  org.springframework.web.servlet.DispatcherServlet - Completed initialization in 2 ms
+2025-12-11 14:41:50.049 [RMI TCP Connection(3)-192.168.14.1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2025-12-11 14:41:50.267 [RMI TCP Connection(3)-192.168.14.1] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.jdbc.JDBC4Connection@3a7de6c9
+2025-12-11 14:41:50.272 [RMI TCP Connection(3)-192.168.14.1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2025-12-11 14:44:24.516 [http-nio-8080-exec-2] INFO  a.intelligent.resume.service.impl.AuthServiceImpl - 用户登录, phone=13800138001
+2025-12-11 14:44:24.882 [http-nio-8080-exec-2] INFO  a.intelligent.resume.service.impl.AuthServiceImpl - 用户登录成功, phone=13800138001, userId=2

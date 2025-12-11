@@ -48,6 +48,21 @@ public enum ResultCode {
     LOGIN_FAILED(1001, "用户名或密码错误"),
 
     /**
+     * 手机号未注册
+     */
+    PHONE_NOT_REGISTERED(1005, "该手机号未注册"),
+
+    /**
+     * 账号已被禁用
+     */
+    ACCOUNT_DISABLED(1006, "该账号已被禁用"),
+
+    /**
+     * 密码错误
+     */
+    PASSWORD_ERROR(1007, "密码错误"),
+
+    /**
      * 用户已存在
      */
     USER_EXIST(1002, "用户已存在"),
