@@ -46,4 +46,21 @@ public interface IVerifyCodeService {
      * @param type  验证码类型
      */
     void deleteVerifyCode(String phone, VerifyCodeType type);
+
+    /**
+     * 检查验证码是否已验证（使用字符串类型）
+     *
+     * @param phone    手机号
+     * @param typeCode 验证码类型字符串
+     * @return 是否已验证
+     */
+    boolean isCodeVerified(String phone, String typeCode);
+
+    /**
+     * 清除验证状态
+     *
+     * @param phone    手机号
+     * @param typeCode 验证码类型字符串
+     */
+    void clearVerifiedStatus(String phone, String typeCode);
 }
