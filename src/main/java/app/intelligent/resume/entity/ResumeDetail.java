@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -51,7 +52,7 @@ public class ResumeDetail implements Serializable {
     /**
      * 出生日期
      */
-    private String birthDate;
+    private LocalDate birthDate;
 
     /**
      * 年龄

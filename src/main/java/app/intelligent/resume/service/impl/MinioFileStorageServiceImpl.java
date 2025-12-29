@@ -36,18 +36,40 @@ public class MinioFileStorageServiceImpl implements IFileStorageService {
      */
     @PostConstruct
     public void init() {
+        // 初始化默认存储桶
+        initBucket(minioConfig.getBucketName());
+        
+        // 初始化头像存储桶
+        if (minioConfig.getAvatarBucket() != null && !minioConfig.getAvatarBucket().equals(minioConfig.getBucketName())) {
+            initBucket(minioConfig.getAvatarBucket());
+        }
+        
+        // 初始化简历存储桶
+        if (minioConfig.getResumeBucket() != null && !minioConfig.getResumeBucket().equals(minioConfig.getBucketName())) {
+            initBucket(minioConfig.getResumeBucket());
+        }
+    }
+
+    /**
+     * 初始化存储桶
+     */
+    private void initBucket(String bucketName) {
+        if (bucketName == null || bucketName.isEmpty()) {
+            return;
+        }
+        
         try {
             boolean bucketExists = minioClient.bucketExists(BucketExistsArgs.builder()
-                    .bucket(minioConfig.getBucketName())
+                    .bucket(bucketName)
                     .build());
 
             if (!bucketExists) {
                 minioClient.makeBucket(MakeBucketArgs.builder()
-                        .bucket(minioConfig.getBucketName())
+                        .bucket(bucketName)
                         .build());
-                log.info("创建MinIO存储桶成功: {}", minioConfig.getBucketName());
+                log.info("创建MinIO存储桶成功: {}", bucketName);
 
-                // 设置存储桶策略为公开读取（可选）
+                // 设置存储桶策略为公开读取
                 String policy = """
                     {
                         "Version": "2012-10-17",
@@ -60,16 +82,18 @@ public class MinioFileStorageServiceImpl implements IFileStorageService {
                             }
                         ]
                     }
-                    """.formatted(minioConfig.getBucketName());
+                    """.formatted(bucketName);
 
                 minioClient.setBucketPolicy(SetBucketPolicyArgs.builder()
-                        .bucket(minioConfig.getBucketName())
+                        .bucket(bucketName)
                         .config(policy)
                         .build());
-                log.info("设置存储桶公开读取策略成功");
+                log.info("设置存储桶 {} 公开读取策略成功", bucketName);
+            } else {
+                log.info("存储桶 {} 已存在", bucketName);
             }
         } catch (Exception e) {
-            log.error("初始化MinIO存储桶失败", e);
+            log.error("初始化MinIO存储桶 {} 失败", bucketName, e);
         }
     }
 
@@ -85,6 +109,10 @@ public class MinioFileStorageServiceImpl implements IFileStorageService {
         }
 
         try {
+            // 根据文件类型获取存储桶
+            String bucketName = minioConfig.getBucketByType(fileType);
+            String urlPrefix = minioConfig.getUrlPrefixByType(fileType);
+
             // 生成唯一文件名
             String originalFilename = file.getOriginalFilename();
             String extension = getFileExtension(originalFilename);
@@ -99,15 +127,15 @@ public class MinioFileStorageServiceImpl implements IFileStorageService {
 
             // 上传到MinIO
             minioClient.putObject(PutObjectArgs.builder()
-                    .bucket(minioConfig.getBucketName())
+                    .bucket(bucketName)
                     .object(objectName)
                     .stream(inputStream, file.getSize(), -1)
                     .contentType(contentType)
                     .build());
 
             // 构建访问URL
-            String fileUrl = minioConfig.getUrlPrefix() + "/" + objectName;
-            log.info("文件上传成功, objectName={}, fileUrl={}", objectName, fileUrl);
+            String fileUrl = urlPrefix + "/" + objectName;
+            log.info("文件上传成功, bucket={}, objectName={}, fileUrl={}", bucketName, objectName, fileUrl);
 
             return fileUrl;
         } catch (Exception e) {
@@ -119,18 +147,20 @@ public class MinioFileStorageServiceImpl implements IFileStorageService {
     @Override
     public boolean deleteFile(String fileUrl) {
         try {
-            // 从URL提取对象名称
+            // 从URL提取对象名称和存储桶
             String objectName = extractObjectName(fileUrl);
-            if (objectName == null) {
+            String bucketName = extractBucketName(fileUrl);
+            
+            if (objectName == null || bucketName == null) {
                 return false;
             }
 
             minioClient.removeObject(RemoveObjectArgs.builder()
-                    .bucket(minioConfig.getBucketName())
+                    .bucket(bucketName)
                     .object(objectName)
                     .build());
 
-            log.info("文件删除成功, objectName={}", objectName);
+            log.info("文件删除成功, bucket={}, objectName={}", bucketName, objectName);
             return true;
         } catch (Exception e) {
             log.error("文件删除失败, fileUrl={}", fileUrl, e);
@@ -153,11 +183,43 @@ public class MinioFileStorageServiceImpl implements IFileStorageService {
         }
     }
 
+    /**
+     * 获取预签名URL（指定存储桶）
+     */
+    public String getPresignedUrl(String bucketName, String objectName, int expiry) {
+        try {
+            return minioClient.getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder()
+                    .method(Method.GET)
+                    .bucket(bucketName)
+                    .object(objectName)
+                    .expiry(expiry, TimeUnit.SECONDS)
+                    .build());
+        } catch (Exception e) {
+            log.error("获取预签名URL失败, bucket={}, objectName={}", bucketName, objectName, e);
+            throw new BusinessException(ResultCode.FILE_URL_GENERATE_FAILED);
+        }
+    }
+
     @Override
     public boolean fileExists(String objectName) {
         try {
             minioClient.statObject(StatObjectArgs.builder()
                     .bucket(minioConfig.getBucketName())
+                    .object(objectName)
+                    .build());
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
+     * 检查文件是否存在（指定存储桶）
+     */
+    public boolean fileExists(String bucketName, String objectName) {
+        try {
+            minioClient.statObject(StatObjectArgs.builder()
+                    .bucket(bucketName)
                     .object(objectName)
                     .build());
             return true;
@@ -195,12 +257,43 @@ public class MinioFileStorageServiceImpl implements IFileStorageService {
             return null;
         }
 
-        String urlPrefix = minioConfig.getUrlPrefix();
-        if (fileUrl.startsWith(urlPrefix)) {
-            return fileUrl.substring(urlPrefix.length() + 1);
+        // 尝试从各种URL前缀中提取
+        String[] prefixes = {
+            minioConfig.getResumeUrlPrefix(),
+            minioConfig.getAvatarUrlPrefix(),
+            minioConfig.getUrlPrefix()
+        };
+
+        for (String prefix : prefixes) {
+            if (prefix != null && fileUrl.startsWith(prefix)) {
+                return fileUrl.substring(prefix.length() + 1);
+            }
         }
 
         // 如果不是完整URL，假设直接是对象名称
         return fileUrl;
+    }
+
+    /**
+     * 从URL提取存储桶名称
+     */
+    private String extractBucketName(String fileUrl) {
+        if (fileUrl == null || fileUrl.isEmpty()) {
+            return null;
+        }
+
+        // 根据URL前缀判断存储桶
+        if (minioConfig.getResumeUrlPrefix() != null && fileUrl.startsWith(minioConfig.getResumeUrlPrefix())) {
+            return minioConfig.getResumeBucket();
+        }
+        if (minioConfig.getAvatarUrlPrefix() != null && fileUrl.startsWith(minioConfig.getAvatarUrlPrefix())) {
+            return minioConfig.getAvatarBucket();
+        }
+        if (minioConfig.getUrlPrefix() != null && fileUrl.startsWith(minioConfig.getUrlPrefix())) {
+            return minioConfig.getBucketName();
+        }
+
+        // 默认返回默认存储桶
+        return minioConfig.getBucketName();
     }
 }
