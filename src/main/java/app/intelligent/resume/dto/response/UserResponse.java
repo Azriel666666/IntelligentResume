@@ -3,6 +3,7 @@ package app.intelligent.resume.dto.response;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -51,7 +52,7 @@ public class UserResponse {
     private Integer gender;
 
     @Schema(description = "出生日期")
-    private String birthDate;
+    private LocalDate birthDate;
 
     @Schema(description = "创建时间")
     private LocalDateTime createTime;
