@@ -83,6 +83,31 @@ public enum ResultCode {
     RESUME_NOT_EXIST(2001, "简历不存在"),
 
     /**
+     * 无权限操作该简历
+     */
+    RESUME_NO_PERMISSION(2002, "无权限操作该简历"),
+
+    /**
+     * 简历解析中
+     */
+    RESUME_PARSING(2003, "简历正在解析中，请稍后"),
+
+    /**
+     * 简历解析失败
+     */
+    RESUME_PARSE_FAILED(2004, "简历解析失败"),
+
+    /**
+     * 简历文件不存在
+     */
+    RESUME_FILE_NOT_EXIST(2005, "简历文件不存在"),
+
+    /**
+     * 简历数量超限
+     */
+    RESUME_COUNT_EXCEEDED(2006, "简历数量已达上限"),
+
+    /**
      * 岗位不存在
      */
     JOB_NOT_EXIST(3001, "岗位不存在"),

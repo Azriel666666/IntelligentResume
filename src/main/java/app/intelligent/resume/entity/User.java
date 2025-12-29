@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -103,7 +104,7 @@ public class User implements Serializable {
     /**
      * 出生日期
      */
-    private String birthDate;
+    private LocalDate birthDate;
 
     /**
      * 最后登录时间

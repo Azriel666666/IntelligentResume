@@ -36,8 +36,14 @@ minio:
   endpoint: http://localhost:9005
   access-key: root
   secret-key: 12345678
+  # 头像存储桶
+  avatar-bucket: avatar
+  avatar-url-prefix: http://localhost:9005/avatar
+  # 简历存储桶
+  resume-bucket: resume
+  resume-url-prefix: http://localhost:9005/resume
+  # 默认存储桶（兼容旧代码）
   bucket-name: avatar
-  # 文件访问URL前缀（公开访问时使用）
   url-prefix: http://localhost:9005/avatar
 
 # 开发环境日志级别
