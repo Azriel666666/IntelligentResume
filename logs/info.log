@@ -42,3 +42,4 @@
 2025-12-29 10:44:04.780 [http-nio-8080-exec-9] INFO  a.i.resume.service.impl.ResumeServiceImpl - HR查看简历, hrId=3, resumeId=1
 2025-12-29 10:56:40.013 [http-nio-8080-exec-2] INFO  a.i.resume.service.impl.ResumeServiceImpl - 设置默认简历成功, userId=4, resumeId=1
 2025-12-29 11:09:40.749 [http-nio-8080-exec-6] INFO  a.i.resume.service.impl.ResumeServiceImpl - 设置默认简历成功, userId=4, resumeId=1
+2025-12-29 11:16:45.098 [http-nio-8080-exec-3] INFO  a.i.resume.service.impl.ResumeServiceImpl - 下载简历, resumeId=1
