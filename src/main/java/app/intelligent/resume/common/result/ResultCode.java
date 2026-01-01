@@ -108,6 +108,11 @@ public enum ResultCode {
     RESUME_COUNT_EXCEEDED(2006, "简历数量已达上限"),
 
     /**
+     * 简历详情不存在
+     */
+    RESUME_DETAIL_NOT_EXIST(2007, "简历详情不存在"),
+
+    /**
      * 岗位不存在
      */
     JOB_NOT_EXIST(3001, "岗位不存在"),

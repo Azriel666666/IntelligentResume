@@ -46,6 +46,23 @@ minio:
   bucket-name: avatar
   url-prefix: http://localhost:9005/avatar
 
+# 阿里云通义千问API配置
+alibaba:
+  qwen:
+    # API Key（需要在阿里云百炼平台获取）
+    # 获取地址：https://bailian.console.aliyun.com/
+    api-key: sk-94e6757f073941c3891434e41d886934
+    # 模型名称选择：
+    # - qwen-turbo: 速度快，成本低
+    # - qwen-plus: 推荐！能力均衡，适合简历分析
+    # - qwen-max: 最强能力，复杂分析
+    # - qwen-max-longcontext: 支持长文本
+    model: qwen-plus
+    # 请求超时时间（秒）
+    timeout: 60
+    # 是否启用AI分析（设为false时使用纯规则引擎）
+    enabled: true
+
 # 开发环境日志级别
 logging:
   level:
