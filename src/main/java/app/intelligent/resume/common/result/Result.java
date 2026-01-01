@@ -35,6 +35,11 @@ public class Result<T> implements Serializable {
     private List<T> data;
 
     /**
+     * 分页信息（可选）
+     */
+    private PageInfo pageInfo;
+
+    /**
      * 时间戳
      */
     private Long timestamp;
@@ -84,6 +89,15 @@ public class Result<T> implements Serializable {
      */
     public static <T> Result<T> success(String message, List<T> data) {
         return new Result<>(ResultCode.SUCCESS.getCode(), message, data);
+    }
+
+    /**
+     * 成功返回（带分页信息）
+     */
+    public static <T> Result<T> success(List<T> data, long total, long pages, long current, long size) {
+        Result<T> result = new Result<>(ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMessage(), data);
+        result.setPageInfo(new PageInfo(total, pages, current, size));
+        return result;
     }
 
     /**
