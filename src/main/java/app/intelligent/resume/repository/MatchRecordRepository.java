@@ -9,7 +9,7 @@ import org.apache.ibatis.annotations.Select;
 import java.util.List;
 
 /**
- * 匹配记录Repository接口
+ * 匹配记录Mapper
  *
  * @author Intelligent Resume Team
  */
@@ -19,13 +19,13 @@ public interface MatchRecordRepository extends BaseMapper<MatchRecord> {
     /**
      * 根据简历ID查询匹配记录
      */
-    @Select("SELECT * FROM match_record WHERE resume_id = #{resumeId} ORDER BY match_score DESC, create_time DESC")
+    @Select("SELECT * FROM match_record WHERE resume_id = #{resumeId} ORDER BY match_score DESC")
     List<MatchRecord> selectByResumeId(@Param("resumeId") Long resumeId);
 
     /**
      * 根据岗位ID查询匹配记录
      */
-    @Select("SELECT * FROM match_record WHERE job_id = #{jobId} ORDER BY match_score DESC, create_time DESC")
+    @Select("SELECT * FROM match_record WHERE job_id = #{jobId} ORDER BY match_score DESC")
     List<MatchRecord> selectByJobId(@Param("jobId") Long jobId);
 
     /**
