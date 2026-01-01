@@ -147,3 +147,39 @@ Error starting ApplicationContext. To display the condition evaluation report re
 2026-01-01 14:43:19.472 [RMI TCP Connection(1)-192.168.14.1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
 2026-01-01 14:43:19.663 [RMI TCP Connection(1)-192.168.14.1] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.jdbc.JDBC4Connection@326d3dfd
 2026-01-01 14:43:19.666 [RMI TCP Connection(1)-192.168.14.1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-01-01 16:15:40.613 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-01-01 16:15:40.619 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2026-01-01 16:15:47.977 [background-preinit] INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2026-01-01 16:15:48.009 [main] INFO  a.intelligent.resume.IntelligentResumeApplication - Starting IntelligentResumeApplication using Java 21.0.9 with PID 35808 (E:\AI_Project\IntelligentResume\IntelligentResume_back\target\classes started by Lenovo in E:\AI_Project\IntelligentResume\IntelligentResume_back)
+2026-01-01 16:15:48.009 [main] INFO  a.intelligent.resume.IntelligentResumeApplication - The following 1 profile is active: "dev"
+2026-01-01 16:15:49.191 [main] INFO  o.s.d.r.config.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-01-01 16:15:49.193 [main] INFO  o.s.d.r.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-01-01 16:15:49.233 [main] INFO  o.s.d.r.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 28 ms. Found 0 Redis repository interfaces.
+2026-01-01 16:15:49.954 [main] INFO  o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-01-01 16:15:49.961 [main] INFO  org.apache.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2026-01-01 16:15:49.963 [main] INFO  org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2026-01-01 16:15:49.963 [main] INFO  org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.16]
+2026-01-01 16:15:50.045 [main] INFO  o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-01-01 16:15:50.045 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1991 ms
+2026-01-01 16:15:50.965 [main] INFO  a.i.r.service.impl.MinioFileStorageServiceImpl - 存储桶 avatar 已存在
+2026-01-01 16:15:50.970 [main] INFO  a.i.r.service.impl.MinioFileStorageServiceImpl - 存储桶 resume 已存在
+2026-01-01 16:15:51.558 [main] INFO  org.redisson.Version - Redisson 3.25.0
+2026-01-01 16:15:51.883 [redisson-netty-2-5] INFO  o.r.connection.pool.MasterPubSubConnectionPool - 1 connections initialized for localhost/127.0.0.1:6379
+2026-01-01 16:15:51.897 [redisson-netty-2-14] INFO  org.redisson.connection.pool.MasterConnectionPool - 5 connections initialized for localhost/127.0.0.1:6379
+2026-01-01 16:15:52.626 [main] INFO  o.s.b.actuate.endpoint.web.EndpointLinksResolver - Exposing 1 endpoint(s) beneath base path '/actuator'
+2026-01-01 16:15:52.673 [main] INFO  o.s.security.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@42f9b425, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@37351baa, org.springframework.security.web.context.SecurityContextHolderFilter@514eefc4, org.springframework.security.web.header.HeaderWriterFilter@cc4a0dd, org.springframework.security.web.authentication.logout.LogoutFilter@5b04224a, app.intelligent.resume.security.JwtAuthenticationFilter@27210a3b, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@560e1459, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@6aa7d7a0, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@79de00af, org.springframework.security.web.session.SessionManagementFilter@57e83608, org.springframework.security.web.access.ExceptionTranslationFilter@7a8d6eb3, org.springframework.security.web.access.intercept.AuthorizationFilter@2a4bee4e]
+2026-01-01 16:15:53.198 [main] INFO  org.apache.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2026-01-01 16:15:53.210 [main] INFO  o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2026-01-01 16:15:53.225 [main] INFO  a.intelligent.resume.IntelligentResumeApplication - Started IntelligentResumeApplication in 5.77 seconds (process running for 6.899)
+2026-01-01 16:15:53.661 [RMI TCP Connection(4)-192.168.14.1] INFO  o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-01-01 16:15:53.661 [RMI TCP Connection(4)-192.168.14.1] INFO  org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-01-01 16:15:53.664 [RMI TCP Connection(4)-192.168.14.1] INFO  org.springframework.web.servlet.DispatcherServlet - Completed initialization in 3 ms
+2026-01-01 16:15:53.673 [RMI TCP Connection(1)-192.168.14.1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-01-01 16:15:53.880 [RMI TCP Connection(1)-192.168.14.1] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.jdbc.JDBC4Connection@7d09c44b
+2026-01-01 16:15:53.893 [RMI TCP Connection(1)-192.168.14.1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-01-01 16:16:49.265 [http-nio-8080-exec-4] INFO  a.i.r.service.impl.MinioFileStorageServiceImpl - 文件上传成功, bucket=resume, objectName=resume/2026/01/01/d3017c85d6604c58be40d61b4b6c1a76.pdf, fileUrl=http://localhost:9005/resume/resume/2026/01/01/d3017c85d6604c58be40d61b4b6c1a76.pdf
+2026-01-01 16:16:49.281 [http-nio-8080-exec-4] INFO  a.i.resume.service.impl.ResumeServiceImpl - 简历上传成功, userId=4, resumeId=4, fileName=冀旻 一本 Java后端开发 18241716773.pdf
+2026-01-01 16:16:49.744 [http-nio-8080-exec-4] INFO  a.i.resume.service.impl.ResumeParserServiceImpl - 简历解析完成: name=null, phone=18241716773, email=18241716773@163.com, skills=Java,Spring,SpringBoot,SpringMVC,SpringCloud,MyBatis,MybatisPlus,MySQL,PostgreSQL,Redis,ElasticSearch,Vue,JavaScript,HTML,jQuery,Docker,Kubernetes,Nginx,Linux,Git,RabbitMQ,RocketMQ,Netty,WebSocket,Gradle,IDEA,Nacos,Gateway,Sentinel,Feign,Redisson,JWT,MD5,ECharts,Milvus,Ollama,Qwen,DeepSeek,Ruoyi,Ruoyi-Boot,Ruoyi-Cloud,SpringCloudAlibaba,Springboot,nacos,SrpingAIAlibaba
+2026-01-01 16:16:49.764 [http-nio-8080-exec-4] INFO  a.i.resume.service.impl.ResumeServiceImpl - 简历解析成功, resumeId=4, name=null, phone=18241716773
+2026-01-01 16:23:14.946 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-01-01 16:23:14.950 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
