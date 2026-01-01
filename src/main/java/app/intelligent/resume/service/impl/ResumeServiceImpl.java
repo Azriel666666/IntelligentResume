@@ -17,6 +17,7 @@ import app.intelligent.resume.security.SecurityUtils;
 import app.intelligent.resume.service.IAnalysisReportService;
 import app.intelligent.resume.service.IFileStorageService;
 import app.intelligent.resume.service.IResumeDetailService;
+import app.intelligent.resume.service.IResumeParserService;
 import app.intelligent.resume.service.IResumeService;
 import app.intelligent.resume.service.IUserService;
 import cn.hutool.core.bean.BeanUtil;
@@ -32,6 +33,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -49,6 +52,7 @@ public class ResumeServiceImpl extends ServiceImpl<ResumeRepository, Resume> imp
     private final ResumeRepository resumeRepository;
     private final IResumeDetailService resumeDetailService;
     private final IFileStorageService fileStorageService;
+    private final IResumeParserService resumeParserService;
     private final IUserService userService;
     private final IAnalysisReportService analysisReportService;
     private final ObjectMapper objectMapper;
@@ -116,11 +120,22 @@ public class ResumeServiceImpl extends ServiceImpl<ResumeRepository, Resume> imp
 
         save(resume);
 
-        log.info("简历上传成功, userId={}, resumeId={}, fileName={}", 
+        log.info("简历上传成功, userId={}, resumeId={}, fileName={}",
                 currentUser.getId(), resume.getId(), originalFilename);
 
-        // 7. TODO: 异步调用文档解析服务（后续实现）
-        // parseResumeAsync(resume.getId());
+        // 7. 同步调用文档解析服务
+        try {
+            parseResumeFile(file, resume.getId());
+            // 更新解析状态为成功
+            resume.setParseStatus(2);
+            updateById(resume);
+        } catch (Exception e) {
+            log.error("简历解析失败, resumeId={}", resume.getId(), e);
+            // 更新解析状态为失败
+            resume.setParseStatus(3);
+            resume.setParseError(e.getMessage());
+            updateById(resume);
+        }
 
         return ResumeUploadResponse.builder()
                 .id(resume.getId())
@@ -130,7 +145,7 @@ public class ResumeServiceImpl extends ServiceImpl<ResumeRepository, Resume> imp
                 .fileType(fileType)
                 .fileSize(fileSize)
                 .parseStatus(resume.getParseStatus())
-                .message("简历上传成功，正在解析中")
+                .message(resume.getParseStatus() == 2 ? "简历上传并解析成功" : "简历上传成功，解析失败")
                 .build();
     }
 
@@ -677,5 +692,32 @@ public class ResumeServiceImpl extends ServiceImpl<ResumeRepository, Resume> imp
         }
 
         return true;
+    }
+
+    /**
+     * 解析简历文件
+     *
+     * @param file 上传的文件
+     * @param resumeId 简历ID
+     */
+    private void parseResumeFile(MultipartFile file, Long resumeId) {
+        try (InputStream inputStream = file.getInputStream()) {
+            // 调用解析服务
+            ResumeDetail parsedDetail = resumeParserService.parseResume(inputStream, file.getOriginalFilename());
+            
+            if (parsedDetail != null) {
+                // 设置简历ID
+                parsedDetail.setResumeId(resumeId);
+                
+                // 保存解析结果
+                resumeDetailService.saveOrUpdateDetail(parsedDetail);
+                
+                log.info("简历解析成功, resumeId={}, name={}, phone={}",
+                        resumeId, parsedDetail.getName(), parsedDetail.getPhone());
+            }
+        } catch (IOException e) {
+            log.error("读取简历文件失败, resumeId={}", resumeId, e);
+            throw new BusinessException(ResultCode.RESUME_PARSE_FAILED);
+        }
     }
 }

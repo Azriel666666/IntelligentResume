@@ -25,6 +25,7 @@ e:\AI_Project\IntelligentResume\IntelligentResume_back\src\main\java\app\intelli
 e:\AI_Project\IntelligentResume\IntelligentResume_back\src\main\java\app\intelligent\resume\dto\request\ResumeCreateRequest.java
 e:\AI_Project\IntelligentResume\IntelligentResume_back\src\main\java\app\intelligent\resume\dto\request\UserStatusUpdateRequest.java
 e:\AI_Project\IntelligentResume\IntelligentResume_back\src\main\java\app\intelligent\resume\service\IJobService.java
+e:\AI_Project\IntelligentResume\IntelligentResume_back\src\main\java\app\intelligent\resume\service\impl\WenxinServiceImpl.java
 e:\AI_Project\IntelligentResume\IntelligentResume_back\src\main\java\app\intelligent\resume\service\impl\VerifyCodeServiceImpl.java
 e:\AI_Project\IntelligentResume\IntelligentResume_back\src\main\java\app\intelligent\resume\dto\request\ResumeUpdateRequest.java
 e:\AI_Project\IntelligentResume\IntelligentResume_back\src\main\java\app\intelligent\resume\IntelligentResumeApplication.java
@@ -53,6 +54,7 @@ e:\AI_Project\IntelligentResume\IntelligentResume_back\src\main\java\app\intelli
 e:\AI_Project\IntelligentResume\IntelligentResume_back\src\main\java\app\intelligent\resume\entity\Resume.java
 e:\AI_Project\IntelligentResume\IntelligentResume_back\src\main\java\app\intelligent\resume\dto\request\SendCodeRequest.java
 e:\AI_Project\IntelligentResume\IntelligentResume_back\src\main\java\app\intelligent\resume\dto\response\VerifyCodeResponse.java
+e:\AI_Project\IntelligentResume\IntelligentResume_back\src\main\java\app\intelligent\resume\config\WenxinConfig.java
 e:\AI_Project\IntelligentResume\IntelligentResume_back\src\main\java\app\intelligent\resume\task\VerifyCodeCleanupTask.java
 e:\AI_Project\IntelligentResume\IntelligentResume_back\src\main\java\app\intelligent\resume\service\IFileStorageService.java
 e:\AI_Project\IntelligentResume\IntelligentResume_back\src\main\java\app\intelligent\resume\common\exception\BusinessException.java
@@ -62,8 +64,10 @@ e:\AI_Project\IntelligentResume\IntelligentResume_back\src\main\java\app\intelli
 e:\AI_Project\IntelligentResume\IntelligentResume_back\src\main\java\app\intelligent\resume\dto\response\SendCodeResponse.java
 e:\AI_Project\IntelligentResume\IntelligentResume_back\src\main\java\app\intelligent\resume\service\impl\SmsServiceImpl.java
 e:\AI_Project\IntelligentResume\IntelligentResume_back\src\main\java\app\intelligent\resume\dto\response\LoginResponse.java
+e:\AI_Project\IntelligentResume\IntelligentResume_back\src\main\java\app\intelligent\resume\service\IResumeAnalysisService.java
 e:\AI_Project\IntelligentResume\IntelligentResume_back\src\main\java\app\intelligent\resume\security\JwtTokenProvider.java
 e:\AI_Project\IntelligentResume\IntelligentResume_back\src\main\java\app\intelligent\resume\dto\request\UserCreateRequest.java
+e:\AI_Project\IntelligentResume\IntelligentResume_back\src\main\java\app\intelligent\resume\service\impl\ResumeAnalysisServiceImpl.java
 e:\AI_Project\IntelligentResume\IntelligentResume_back\src\main\java\app\intelligent\resume\entity\AnalysisReport.java
 e:\AI_Project\IntelligentResume\IntelligentResume_back\src\main\java\app\intelligent\resume\security\UserDetailsServiceImpl.java
 e:\AI_Project\IntelligentResume\IntelligentResume_back\src\main\java\app\intelligent\resume\common\result\Result.java
@@ -72,8 +76,11 @@ e:\AI_Project\IntelligentResume\IntelligentResume_back\src\main\java\app\intelli
 e:\AI_Project\IntelligentResume\IntelligentResume_back\src\main\java\app\intelligent\resume\service\IUserService.java
 e:\AI_Project\IntelligentResume\IntelligentResume_back\src\main\java\app\intelligent\resume\controller\UserController.java
 e:\AI_Project\IntelligentResume\IntelligentResume_back\src\main\java\app\intelligent\resume\dto\request\LoginRequest.java
+e:\AI_Project\IntelligentResume\IntelligentResume_back\src\main\java\app\intelligent\resume\service\impl\ResumeParserServiceImpl.java
+e:\AI_Project\IntelligentResume\IntelligentResume_back\src\main\java\app\intelligent\resume\service\IResumeParserService.java
 e:\AI_Project\IntelligentResume\IntelligentResume_back\src\main\java\app\intelligent\resume\config\RedissonConfig.java
 e:\AI_Project\IntelligentResume\IntelligentResume_back\src\main\java\app\intelligent\resume\dto\request\UserUpdateRequest.java
+e:\AI_Project\IntelligentResume\IntelligentResume_back\src\main\java\app\intelligent\resume\service\IWenxinService.java
 e:\AI_Project\IntelligentResume\IntelligentResume_back\src\main\java\app\intelligent\resume\dto\response\UserResponse.java
 e:\AI_Project\IntelligentResume\IntelligentResume_back\src\main\java\app\intelligent\resume\service\impl\AuthServiceImpl.java
 e:\AI_Project\IntelligentResume\IntelligentResume_back\src\main\java\app\intelligent\resume\service\ISmsService.java
