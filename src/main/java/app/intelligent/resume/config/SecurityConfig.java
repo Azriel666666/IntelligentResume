@@ -66,6 +66,9 @@ public class SecurityConfig {
                         // 公开接口
                         .requestMatchers(
                                 "/api/auth/**",
+                                "/api/files/avatar/**",
+                                "/api/files/resume/**",
+                                "/api/files/chat/**",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/swagger-ui.html",

@@ -38,16 +38,17 @@ minio:
   secret-key: 12345678
   # 头像存储桶
   avatar-bucket: avatar
-  avatar-url-prefix: http://localhost:9005/avatar
+  # 通过后端代理访问，避免跨域问题
+  avatar-url-prefix: http://localhost:8080/api/files/avatar
   # 简历存储桶
   resume-bucket: resume
-  resume-url-prefix: http://localhost:9005/resume
+  resume-url-prefix: http://localhost:8080/api/files/resume
   # 聊天文件存储桶
   chat-bucket: chat
-  chat-url-prefix: http://localhost:9005/chat
+  chat-url-prefix: http://localhost:8080/api/files/chat
   # 默认存储桶（兼容旧代码）
   bucket-name: avatar
-  url-prefix: http://localhost:9005/avatar
+  url-prefix: http://localhost:8080/api/files/avatar
 
 # 阿里云通义千问API配置
 alibaba:

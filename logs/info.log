@@ -1224,3 +1224,34 @@ ElasticSearch 实现全局搜索功能；
 2026-01-03 21:41:15.507 [http-nio-8080-exec-1] INFO  a.i.resume.service.impl.ApplicationServiceImpl - 获取用户 5 的投递记录，状态: null, 页码: 1
 2026-01-03 21:42:21.000 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
 2026-01-03 21:42:21.004 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2026-01-03 21:42:29.136 [background-preinit] INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2026-01-03 21:42:29.169 [main] INFO  a.intelligent.resume.IntelligentResumeApplication - Starting IntelligentResumeApplication using Java 21.0.9 with PID 39560 (E:\AI_Project\IntelligentResume\IntelligentResume_back\target\classes started by Lenovo in E:\AI_Project\IntelligentResume\IntelligentResume_back)
+2026-01-03 21:42:29.169 [main] INFO  a.intelligent.resume.IntelligentResumeApplication - The following 1 profile is active: "dev"
+2026-01-03 21:42:30.556 [main] INFO  o.s.d.r.config.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-01-03 21:42:30.559 [main] INFO  o.s.d.r.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-01-03 21:42:30.605 [main] INFO  o.s.d.r.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 34 ms. Found 0 Redis repository interfaces.
+2026-01-03 21:42:31.407 [main] INFO  o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-01-03 21:42:31.416 [main] INFO  org.apache.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2026-01-03 21:42:31.418 [main] INFO  org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2026-01-03 21:42:31.419 [main] INFO  org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.16]
+2026-01-03 21:42:31.496 [main] INFO  o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-01-03 21:42:31.496 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 2277 ms
+2026-01-03 21:42:32.290 [main] INFO  org.redisson.Version - Redisson 3.25.0
+2026-01-03 21:42:32.640 [redisson-netty-2-5] INFO  o.r.connection.pool.MasterPubSubConnectionPool - 1 connections initialized for localhost/127.0.0.1:6379
+2026-01-03 21:42:32.654 [redisson-netty-2-14] INFO  org.redisson.connection.pool.MasterConnectionPool - 5 connections initialized for localhost/127.0.0.1:6379
+2026-01-03 21:42:33.264 [main] INFO  a.i.r.service.impl.MinioFileStorageServiceImpl - 存储桶 avatar 已存在
+2026-01-03 21:42:33.268 [main] INFO  a.i.r.service.impl.MinioFileStorageServiceImpl - 存储桶 resume 已存在
+2026-01-03 21:42:33.271 [main] INFO  a.i.r.service.impl.MinioFileStorageServiceImpl - 存储桶 chat 已存在
+2026-01-03 21:42:34.505 [main] INFO  o.s.b.actuate.endpoint.web.EndpointLinksResolver - Exposing 1 endpoint(s) beneath base path '/actuator'
+2026-01-03 21:42:34.555 [main] INFO  o.s.security.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@2591477f, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@761d3c20, org.springframework.security.web.context.SecurityContextHolderFilter@24c94e95, org.springframework.security.web.header.HeaderWriterFilter@6461c673, org.springframework.security.web.authentication.logout.LogoutFilter@73b63917, app.intelligent.resume.security.JwtAuthenticationFilter@5e1a7d3, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@5014ccf9, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@58f259bd, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@172f2717, org.springframework.security.web.session.SessionManagementFilter@4caca86d, org.springframework.security.web.access.ExceptionTranslationFilter@5275d709, org.springframework.security.web.access.intercept.AuthorizationFilter@3d9dc84d]
+2026-01-03 21:42:35.127 [main] INFO  org.apache.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2026-01-03 21:42:35.140 [main] INFO  o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2026-01-03 21:42:35.154 [main] INFO  a.intelligent.resume.IntelligentResumeApplication - Started IntelligentResumeApplication in 6.651 seconds (process running for 7.923)
+2026-01-03 21:42:35.577 [RMI TCP Connection(3)-192.168.14.1] INFO  o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-01-03 21:42:35.577 [RMI TCP Connection(3)-192.168.14.1] INFO  org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-01-03 21:42:35.579 [RMI TCP Connection(3)-192.168.14.1] INFO  org.springframework.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+2026-01-03 21:42:35.595 [RMI TCP Connection(2)-192.168.14.1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-01-03 21:42:35.787 [RMI TCP Connection(2)-192.168.14.1] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.jdbc.JDBC4Connection@3f59a985
+2026-01-03 21:42:35.799 [RMI TCP Connection(2)-192.168.14.1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-01-03 21:43:12.623 [http-nio-8080-exec-5] INFO  a.i.r.service.impl.MinioFileStorageServiceImpl - 文件上传成功, bucket=avatar, objectName=avatar/2026/01/03/6bd464ad18704df999e87131dace7f95.jpg, fileUrl=http://localhost:8080/api/files/avatar/avatar/2026/01/03/6bd464ad18704df999e87131dace7f95.jpg
+2026-01-03 21:43:12.682 [http-nio-8080-exec-5] INFO  a.intelligent.resume.service.impl.UserServiceImpl - 用户更新头像成功, userId=6

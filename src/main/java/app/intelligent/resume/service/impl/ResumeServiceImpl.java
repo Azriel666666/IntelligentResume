@@ -36,6 +36,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -348,39 +349,64 @@ public class ResumeServiceImpl extends ServiceImpl<ResumeRepository, Resume> imp
 
     @Override
     public Page<ResumeDetailResponse> searchResumes(ResumeSearchRequest request) {
-        // 构建查询条件
-        LambdaQueryWrapper<Resume> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Resume::getDeleted, 0);
-        queryWrapper.eq(Resume::getStatus, 1); // 只搜索正常状态的简历
-
-        // 分页查询简历
-        Page<Resume> page = new Page<>(request.getPage(), request.getSize());
-        Page<Resume> resumePage = page(page, queryWrapper);
-
-        // 转换为详情响应
+        // 0. 解析工作年限参数
+        request.parseWorkYears();
+        
+        // 1. 首先获取所有默认简历的ID列表（只搜索默认简历）
+        LambdaQueryWrapper<Resume> defaultResumeWrapper = new LambdaQueryWrapper<>();
+        defaultResumeWrapper.eq(Resume::getDeleted, 0);
+        defaultResumeWrapper.eq(Resume::getStatus, 1); // 只搜索正常状态的简历
+        defaultResumeWrapper.eq(Resume::getIsDefault, 1); // 只搜索默认简历
+        
+        List<Resume> allDefaultResumes = list(defaultResumeWrapper);
+        
+        // 2. 根据搜索条件过滤简历
+        List<Resume> filteredResumes = allDefaultResumes.stream()
+                .filter(resume -> {
+                    ResumeDetail detail = resumeDetailService.getByResumeId(resume.getId());
+                    if (detail == null) {
+                        return false;
+                    }
+                    return matchSearchCriteria(detail, request);
+                })
+                .collect(Collectors.toList());
+        
+        // 3. 手动分页
+        int page = request.getPage() != null ? request.getPage() : 1;
+        int size = request.getSize() != null ? request.getSize() : 10;
+        int total = filteredResumes.size();
+        int fromIndex = (page - 1) * size;
+        int toIndex = Math.min(fromIndex + size, total);
+        
+        List<Resume> pagedResumes = fromIndex < total
+                ? filteredResumes.subList(fromIndex, toIndex)
+                : Collections.emptyList();
+        
+        // 4. 转换为详情响应
         Page<ResumeDetailResponse> responsePage = new Page<>();
-        responsePage.setTotal(resumePage.getTotal());
-        responsePage.setCurrent(resumePage.getCurrent());
-        responsePage.setSize(resumePage.getSize());
-        responsePage.setPages(resumePage.getPages());
+        responsePage.setTotal(total);
+        responsePage.setCurrent(page);
+        responsePage.setSize(size);
+        responsePage.setPages((total + size - 1) / size);
 
-        List<ResumeDetailResponse> records = resumePage.getRecords().stream()
+        List<ResumeDetailResponse> records = pagedResumes.stream()
                 .map(resume -> {
                     ResumeDetailResponse response = new ResumeDetailResponse();
                     BeanUtil.copyProperties(resume, response);
 
+                    // 获取用户昵称
+                    User user = userService.getById(resume.getUserId());
+                    if (user != null) {
+                        response.setNickname(user.getNickname());
+                    }
+
                     // 获取简历详情
                     ResumeDetail detail = resumeDetailService.getByResumeId(resume.getId());
                     if (detail != null) {
-                        // 根据搜索条件过滤
-                        if (!matchSearchCriteria(detail, request)) {
-                            return null;
-                        }
                         response.setDetail(convertToResumeDetailDTO(detail));
                     }
                     return response;
                 })
-                .filter(r -> r != null)
                 .collect(Collectors.toList());
 
         responsePage.setRecords(records);
@@ -760,20 +786,43 @@ public class ResumeServiceImpl extends ServiceImpl<ResumeRepository, Resume> imp
             }
         }
 
-        // 城市匹配
+        // 城市匹配（同时匹配当前城市和期望城市）
         if (StringUtils.hasText(request.getCity())) {
-            if (detail.getCurrentCity() == null || 
-                    !detail.getCurrentCity().contains(request.getCity())) {
+            String searchCity = request.getCity();
+            // 去掉"市"、"省"等后缀，提取核心城市名称进行模糊匹配
+            String normalizedSearchCity = normalizeCityName(searchCity);
+            boolean cityMatched = false;
+            
+            // 匹配当前所在城市
+            if (detail.getCurrentCity() != null) {
+                String normalizedCurrentCity = normalizeCityName(detail.getCurrentCity());
+                if (normalizedCurrentCity.contains(normalizedSearchCity) ||
+                    normalizedSearchCity.contains(normalizedCurrentCity)) {
+                    cityMatched = true;
+                }
+            }
+            
+            // 匹配期望城市
+            if (detail.getExpectedCity() != null) {
+                String normalizedExpectedCity = normalizeCityName(detail.getExpectedCity());
+                if (normalizedExpectedCity.contains(normalizedSearchCity) ||
+                    normalizedSearchCity.contains(normalizedExpectedCity)) {
+                    cityMatched = true;
+                }
+            }
+            
+            if (!cityMatched) {
                 return false;
             }
         }
 
-        // 技能标签匹配
-        if (StringUtils.hasText(request.getSkillTags())) {
+        // 技能标签匹配（支持 skills 和 skillTags 两个参数）
+        String effectiveSkillTags = request.getEffectiveSkillTags();
+        if (StringUtils.hasText(effectiveSkillTags)) {
             if (detail.getSkillTags() == null) {
                 return false;
             }
-            String[] requiredSkills = request.getSkillTags().split(",");
+            String[] requiredSkills = effectiveSkillTags.split(",");
             String detailSkills = detail.getSkillTags().toLowerCase();
             for (String skill : requiredSkills) {
                 if (!detailSkills.contains(skill.trim().toLowerCase())) {
@@ -783,6 +832,23 @@ public class ResumeServiceImpl extends ServiceImpl<ResumeRepository, Resume> imp
         }
 
         return true;
+    }
+
+    /**
+     * 标准化城市名称，去掉"市"、"省"等后缀
+     * 例如："深圳市" -> "深圳"，"北京市" -> "北京"
+     */
+    private String normalizeCityName(String cityName) {
+        if (cityName == null || cityName.isEmpty()) {
+            return "";
+        }
+        // 去掉常见的行政区划后缀
+        return cityName
+                .replace("市", "")
+                .replace("省", "")
+                .replace("自治区", "")
+                .replace("特别行政区", "")
+                .trim();
     }
 
     /**

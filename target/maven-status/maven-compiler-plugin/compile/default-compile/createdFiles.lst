@@ -40,7 +40,6 @@ app\intelligent\resume\service\impl\ResumeParserServiceImpl.class
 app\intelligent\resume\service\IUserService.class
 app\intelligent\resume\service\impl\AuthServiceImpl.class
 app\intelligent\resume\service\impl\AnalysisReportServiceImpl.class
-app\intelligent\resume\service\impl\ResumeServiceImpl.class
 app\intelligent\resume\dto\response\JobDetailResponse.class
 app\intelligent\resume\dto\request\MatchRequest.class
 app\intelligent\resume\entity\MatchRecord.class
