@@ -5,6 +5,7 @@ import app.intelligent.resume.common.result.Result;
 import app.intelligent.resume.dto.request.LoginRequest;
 import app.intelligent.resume.dto.request.PhoneRegisterRequest;
 import app.intelligent.resume.dto.request.RegisterRequest;
+import app.intelligent.resume.dto.request.ResetPasswordRequest;
 import app.intelligent.resume.dto.request.SendCodeRequest;
 import app.intelligent.resume.dto.request.VerifyCodeRequest;
 import app.intelligent.resume.dto.response.LoginResponse;
@@ -111,6 +112,13 @@ public class AuthController {
         String ip = getClientIp(httpRequest);
         LoginResponse response = authService.registerByPhone(request, ip);
         return Result.success(Collections.singletonList(response));
+    }
+
+    @Operation(summary = "重置密码", description = "使用手机号和验证码重置密码")
+    @PostMapping("/reset-password")
+    public Result<Void> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        authService.resetPassword(request);
+        return Result.success("密码重置成功");
     }
 
     /**

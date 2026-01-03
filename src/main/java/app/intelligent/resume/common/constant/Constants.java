@@ -109,27 +109,33 @@ public class Constants {
 
     /**
      * 投递状态
+     * 对应需求文档4.8.4
      */
     public static class ApplicationStatus {
         /**
          * 待查看
          */
-        public static final Integer PENDING = 1;
+        public static final Integer PENDING = 0;
 
         /**
          * 已查看
          */
-        public static final Integer VIEWED = 2;
+        public static final Integer VIEWED = 1;
 
         /**
-         * 面试邀请
+         * 通过筛选
          */
-        public static final Integer INTERVIEW = 3;
+        public static final Integer PASSED = 2;
 
         /**
-         * 已拒绝
+         * 不合适
          */
-        public static final Integer REJECTED = 4;
+        public static final Integer REJECTED = 3;
+
+        /**
+         * 已发offer
+         */
+        public static final Integer OFFERED = 4;
     }
 
     /**

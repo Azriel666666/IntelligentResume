@@ -48,6 +48,11 @@ public class MinioFileStorageServiceImpl implements IFileStorageService {
         if (minioConfig.getResumeBucket() != null && !minioConfig.getResumeBucket().equals(minioConfig.getBucketName())) {
             initBucket(minioConfig.getResumeBucket());
         }
+        
+        // 初始化聊天文件存储桶
+        if (minioConfig.getChatBucket() != null && !minioConfig.getChatBucket().equals(minioConfig.getBucketName())) {
+            initBucket(minioConfig.getChatBucket());
+        }
     }
 
     /**
@@ -186,6 +191,7 @@ public class MinioFileStorageServiceImpl implements IFileStorageService {
     /**
      * 获取预签名URL（指定存储桶）
      */
+    @Override
     public String getPresignedUrl(String bucketName, String objectName, int expiry) {
         try {
             return minioClient.getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder()
@@ -261,6 +267,7 @@ public class MinioFileStorageServiceImpl implements IFileStorageService {
         String[] prefixes = {
             minioConfig.getResumeUrlPrefix(),
             minioConfig.getAvatarUrlPrefix(),
+            minioConfig.getChatUrlPrefix(),
             minioConfig.getUrlPrefix()
         };
 
@@ -289,11 +296,27 @@ public class MinioFileStorageServiceImpl implements IFileStorageService {
         if (minioConfig.getAvatarUrlPrefix() != null && fileUrl.startsWith(minioConfig.getAvatarUrlPrefix())) {
             return minioConfig.getAvatarBucket();
         }
+        if (minioConfig.getChatUrlPrefix() != null && fileUrl.startsWith(minioConfig.getChatUrlPrefix())) {
+            return minioConfig.getChatBucket();
+        }
         if (minioConfig.getUrlPrefix() != null && fileUrl.startsWith(minioConfig.getUrlPrefix())) {
             return minioConfig.getBucketName();
         }
 
         // 默认返回默认存储桶
         return minioConfig.getBucketName();
+    }
+
+    @Override
+    public InputStream getFileStream(String bucketName, String objectName) {
+        try {
+            return minioClient.getObject(GetObjectArgs.builder()
+                    .bucket(bucketName)
+                    .object(objectName)
+                    .build());
+        } catch (Exception e) {
+            log.error("获取文件流失败, bucket={}, objectName={}", bucketName, objectName, e);
+            throw new BusinessException(ResultCode.FILE_NOT_FOUND);
+        }
     }
 }

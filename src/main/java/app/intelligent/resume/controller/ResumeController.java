@@ -1,17 +1,23 @@
 package app.intelligent.resume.controller;
 
+import app.intelligent.resume.common.exception.BusinessException;
 import app.intelligent.resume.common.result.Result;
+import app.intelligent.resume.common.result.ResultCode;
 import app.intelligent.resume.dto.request.ResumeOnlineCreateRequest;
 import app.intelligent.resume.dto.request.ResumeSearchRequest;
 import app.intelligent.resume.dto.request.ResumeUpdateRequest;
 import app.intelligent.resume.dto.response.ResumeDetailResponse;
 import app.intelligent.resume.dto.response.ResumeUploadResponse;
 import app.intelligent.resume.entity.Resume;
+import app.intelligent.resume.entity.User;
+import app.intelligent.resume.security.SecurityUtils;
 import app.intelligent.resume.service.IResumeService;
+import app.intelligent.resume.service.IUserService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -39,6 +45,7 @@ import java.util.Map;
 public class ResumeController {
 
     private final IResumeService resumeService;
+    private final IUserService userService;
 
     /**
      * 4.3.1 上传简历文件
@@ -157,19 +164,29 @@ public class ResumeController {
 
     /**
      * 4.3.9 下载简历
-     * 下载简历原文件
+     * 下载简历原文件（通过后端代理流式下载）
      */
     @Operation(summary = "下载简历", description = "下载简历原文件")
-    @PreAuthorize("hasAnyRole('HR', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('HR', 'ADMIN', 'SEEKER')")
     @GetMapping("/{id}/download")
-    public Result<Object> downloadResume(
-            @Parameter(description = "简历ID") @PathVariable Long id) {
-        String downloadUrl = resumeService.downloadResume(id);
+    public void downloadResume(
+            @Parameter(description = "简历ID") @PathVariable Long id,
+            HttpServletResponse response) {
+        // 求职者只能下载自己的简历
+        Resume resume = resumeService.getById(id);
+        if (resume == null) {
+            throw new BusinessException(ResultCode.RESUME_NOT_EXIST);
+        }
         
-        Map<String, String> data = new HashMap<>();
-        data.put("downloadUrl", downloadUrl);
+        User currentUser = userService.getCurrentUser();
+        if (currentUser != null && SecurityUtils.isSeeker()) {
+            if (!resume.getUserId().equals(currentUser.getId())) {
+                throw new BusinessException(ResultCode.RESUME_NO_PERMISSION);
+            }
+        }
         
-        return Result.success(Collections.singletonList(data));
+        // 调用服务层进行文件下载
+        resumeService.downloadResumeFile(id, response);
     }
 
     // ========== 以下为管理接口，保持兼容 ==========
