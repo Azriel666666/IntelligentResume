@@ -38,20 +38,24 @@ minio:
   secret-key: 12345678
   # 头像存储桶
   avatar-bucket: avatar
-  avatar-url-prefix: http://localhost:9005/avatar
+  # 通过后端代理访问，避免跨域问题
+  avatar-url-prefix: http://localhost:8080/api/files/avatar
   # 简历存储桶
   resume-bucket: resume
-  resume-url-prefix: http://localhost:9005/resume
+  resume-url-prefix: http://localhost:8080/api/files/resume
+  # 聊天文件存储桶
+  chat-bucket: chat
+  chat-url-prefix: http://localhost:8080/api/files/chat
   # 默认存储桶（兼容旧代码）
   bucket-name: avatar
-  url-prefix: http://localhost:9005/avatar
+  url-prefix: http://localhost:8080/api/files/avatar
 
 # 阿里云通义千问API配置
 alibaba:
   qwen:
     # API Key（需要在阿里云百炼平台获取）
     # 获取地址：https://bailian.console.aliyun.com/
-    api-key: sk-94e6757f073941c3891434e41d886934
+    api-key: xxx
     # 模型名称选择：
     # - qwen-turbo: 速度快，成本低
     # - qwen-plus: 推荐！能力均衡，适合简历分析
@@ -62,6 +66,21 @@ alibaba:
     timeout: 60
     # 是否启用AI分析（设为false时使用纯规则引擎）
     enabled: true
+  # 阿里云短信服务配置
+  sms:
+    # 是否启用真实短信发送（false时使用Mock模式，验证码打印到日志）
+    enabled: false
+    # AccessKey ID（在阿里云控制台获取）
+    access-key-id: your-access-key-id
+    # AccessKey Secret（在阿里云控制台获取）
+    access-key-secret: your-access-key-secret
+    # 短信签名（需要在阿里云短信控制台申请）
+    sign-name: 智能简历
+    # 验证码短信模板Code（需要在阿里云短信控制台申请）
+    # 模板内容示例：您的验证码为：${code}，10分钟内有效，请勿泄露给他人。
+    template-code: SMS_123456789
+    # 区域ID
+    region-id: cn-hangzhou
 
 # 开发环境日志级别
 logging:

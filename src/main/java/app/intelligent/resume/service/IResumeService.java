@@ -101,6 +101,15 @@ public interface IResumeService extends IService<Resume> {
      */
     String downloadResume(Long id);
 
+    /**
+     * 下载简历文件（流式下载）
+     * 对应接口：GET /api/resumes/{id}/download
+     *
+     * @param id       简历ID
+     * @param response HTTP响应对象
+     */
+    void downloadResumeFile(Long id, jakarta.servlet.http.HttpServletResponse response);
+
     // ========== 以下为原有方法，保持兼容 ==========
 
     /**
