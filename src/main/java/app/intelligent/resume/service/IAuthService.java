@@ -3,6 +3,7 @@ package app.intelligent.resume.service;
 import app.intelligent.resume.dto.request.LoginRequest;
 import app.intelligent.resume.dto.request.PhoneRegisterRequest;
 import app.intelligent.resume.dto.request.RegisterRequest;
+import app.intelligent.resume.dto.request.ResetPasswordRequest;
 import app.intelligent.resume.dto.response.LoginResponse;
 
 /**
@@ -40,4 +41,11 @@ public interface IAuthService {
      * 登出
      */
     void logout();
+
+    /**
+     * 重置密码（忘记密码）
+     *
+     * @param request 重置密码请求
+     */
+    void resetPassword(ResetPasswordRequest request);
 }

@@ -36,6 +36,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -228,6 +229,8 @@ public class ResumeServiceImpl extends ServiceImpl<ResumeRepository, Resume> imp
         ResumeDetail detail = resumeDetailService.getByResumeId(id);
         if (detail != null) {
             response.setDetail(convertToResumeDetailDTO(detail));
+            // 设置校园经历
+            response.setExtraInfo(detail.getExtraInfo());
         }
 
         // 5. 获取分析报告
@@ -346,39 +349,64 @@ public class ResumeServiceImpl extends ServiceImpl<ResumeRepository, Resume> imp
 
     @Override
     public Page<ResumeDetailResponse> searchResumes(ResumeSearchRequest request) {
-        // 构建查询条件
-        LambdaQueryWrapper<Resume> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Resume::getDeleted, 0);
-        queryWrapper.eq(Resume::getStatus, 1); // 只搜索正常状态的简历
-
-        // 分页查询简历
-        Page<Resume> page = new Page<>(request.getPage(), request.getSize());
-        Page<Resume> resumePage = page(page, queryWrapper);
-
-        // 转换为详情响应
+        // 0. 解析工作年限参数
+        request.parseWorkYears();
+        
+        // 1. 首先获取所有默认简历的ID列表（只搜索默认简历）
+        LambdaQueryWrapper<Resume> defaultResumeWrapper = new LambdaQueryWrapper<>();
+        defaultResumeWrapper.eq(Resume::getDeleted, 0);
+        defaultResumeWrapper.eq(Resume::getStatus, 1); // 只搜索正常状态的简历
+        defaultResumeWrapper.eq(Resume::getIsDefault, 1); // 只搜索默认简历
+        
+        List<Resume> allDefaultResumes = list(defaultResumeWrapper);
+        
+        // 2. 根据搜索条件过滤简历
+        List<Resume> filteredResumes = allDefaultResumes.stream()
+                .filter(resume -> {
+                    ResumeDetail detail = resumeDetailService.getByResumeId(resume.getId());
+                    if (detail == null) {
+                        return false;
+                    }
+                    return matchSearchCriteria(detail, request);
+                })
+                .collect(Collectors.toList());
+        
+        // 3. 手动分页
+        int page = request.getPage() != null ? request.getPage() : 1;
+        int size = request.getSize() != null ? request.getSize() : 10;
+        int total = filteredResumes.size();
+        int fromIndex = (page - 1) * size;
+        int toIndex = Math.min(fromIndex + size, total);
+        
+        List<Resume> pagedResumes = fromIndex < total
+                ? filteredResumes.subList(fromIndex, toIndex)
+                : Collections.emptyList();
+        
+        // 4. 转换为详情响应
         Page<ResumeDetailResponse> responsePage = new Page<>();
-        responsePage.setTotal(resumePage.getTotal());
-        responsePage.setCurrent(resumePage.getCurrent());
-        responsePage.setSize(resumePage.getSize());
-        responsePage.setPages(resumePage.getPages());
+        responsePage.setTotal(total);
+        responsePage.setCurrent(page);
+        responsePage.setSize(size);
+        responsePage.setPages((total + size - 1) / size);
 
-        List<ResumeDetailResponse> records = resumePage.getRecords().stream()
+        List<ResumeDetailResponse> records = pagedResumes.stream()
                 .map(resume -> {
                     ResumeDetailResponse response = new ResumeDetailResponse();
                     BeanUtil.copyProperties(resume, response);
 
+                    // 获取用户昵称
+                    User user = userService.getById(resume.getUserId());
+                    if (user != null) {
+                        response.setNickname(user.getNickname());
+                    }
+
                     // 获取简历详情
                     ResumeDetail detail = resumeDetailService.getByResumeId(resume.getId());
                     if (detail != null) {
-                        // 根据搜索条件过滤
-                        if (!matchSearchCriteria(detail, request)) {
-                            return null;
-                        }
                         response.setDetail(convertToResumeDetailDTO(detail));
                     }
                     return response;
                 })
-                .filter(r -> r != null)
                 .collect(Collectors.toList());
 
         responsePage.setRecords(records);
@@ -401,9 +429,98 @@ public class ResumeServiceImpl extends ServiceImpl<ResumeRepository, Resume> imp
         // 3. 增加下载次数
         incrementDownloadCount(id);
 
-        // 4. 返回文件URL（可以返回预签名URL以增加安全性）
-        log.info("下载简历, resumeId={}", id);
-        return resume.getFileUrl();
+        // 4. 从 fileUrl 中提取对象名称，生成预签名 URL
+        String fileUrl = resume.getFileUrl();
+        String objectName = extractObjectNameFromUrl(fileUrl);
+        
+        // 生成有效期为 1 小时的预签名 URL（使用 resume 存储桶）
+        String presignedUrl = fileStorageService.getPresignedUrl("resume", objectName, 3600);
+        
+        log.info("下载简历, resumeId={}, presignedUrl={}", id, presignedUrl);
+        return presignedUrl;
+    }
+
+    /**
+     * 从文件 URL 中提取对象名称
+     * 例如: http://localhost:9005/resume/resume/2026/01/03/xxx.docx -> resume/2026/01/03/xxx.docx
+     */
+    private String extractObjectNameFromUrl(String fileUrl) {
+        if (fileUrl == null || fileUrl.isEmpty()) {
+            return null;
+        }
+        
+        // 查找 /resume/ 后面的路径作为对象名称
+        // URL 格式: http://localhost:9005/resume/resume/2026/01/03/xxx.docx
+        // 存储桶名: resume
+        // 对象名称: resume/2026/01/03/xxx.docx
+        int bucketIndex = fileUrl.indexOf("/resume/");
+        if (bucketIndex != -1) {
+            // 跳过 /resume/ 获取对象名称
+            return fileUrl.substring(bucketIndex + 8); // 8 = "/resume/".length()
+        }
+        
+        // 如果不是标准格式，尝试获取最后的路径部分
+        int lastSlashIndex = fileUrl.lastIndexOf("/");
+        if (lastSlashIndex != -1) {
+            return fileUrl.substring(lastSlashIndex + 1);
+        }
+        
+        return fileUrl;
+    }
+
+    @Override
+    public void downloadResumeFile(Long id, jakarta.servlet.http.HttpServletResponse response) {
+        // 1. 获取简历
+        Resume resume = getById(id);
+        if (resume == null) {
+            throw new BusinessException(ResultCode.RESUME_NOT_EXIST);
+        }
+
+        // 2. 检查文件是否存在
+        if (!StringUtils.hasText(resume.getFileUrl())) {
+            throw new BusinessException(ResultCode.RESUME_FILE_NOT_EXIST);
+        }
+
+        // 3. 增加下载次数
+        incrementDownloadCount(id);
+
+        // 4. 从 fileUrl 中提取对象名称
+        String fileUrl = resume.getFileUrl();
+        String objectName = extractObjectNameFromUrl(fileUrl);
+        
+        log.info("下载简历文件, resumeId={}, objectName={}", id, objectName);
+
+        // 5. 设置响应头
+        String fileName = resume.getFileName();
+        if (!StringUtils.hasText(fileName)) {
+            fileName = "resume." + resume.getFileType();
+        }
+        
+        try {
+            // 对文件名进行 URL 编码，处理中文文件名
+            String encodedFileName = java.net.URLEncoder.encode(fileName, "UTF-8").replace("+", "%20");
+            
+            response.setContentType("application/octet-stream");
+            response.setHeader("Content-Disposition", "attachment; filename=\"" + encodedFileName + "\"; filename*=UTF-8''" + encodedFileName);
+            response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
+            
+            // 6. 获取文件流并写入响应
+            try (java.io.InputStream inputStream = fileStorageService.getFileStream("resume", objectName);
+                 java.io.OutputStream outputStream = response.getOutputStream()) {
+                
+                byte[] buffer = new byte[8192];
+                int bytesRead;
+                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, bytesRead);
+                }
+                outputStream.flush();
+            }
+            
+            log.info("简历文件下载成功, resumeId={}, fileName={}", id, fileName);
+        } catch (java.io.IOException e) {
+            log.error("简历文件下载失败, resumeId={}", id, e);
+            throw new BusinessException(ResultCode.FILE_DOWNLOAD_FAILED);
+        }
     }
 
     // ========== 原有方法实现 ==========
@@ -669,20 +786,43 @@ public class ResumeServiceImpl extends ServiceImpl<ResumeRepository, Resume> imp
             }
         }
 
-        // 城市匹配
+        // 城市匹配（同时匹配当前城市和期望城市）
         if (StringUtils.hasText(request.getCity())) {
-            if (detail.getCurrentCity() == null || 
-                    !detail.getCurrentCity().contains(request.getCity())) {
+            String searchCity = request.getCity();
+            // 去掉"市"、"省"等后缀，提取核心城市名称进行模糊匹配
+            String normalizedSearchCity = normalizeCityName(searchCity);
+            boolean cityMatched = false;
+            
+            // 匹配当前所在城市
+            if (detail.getCurrentCity() != null) {
+                String normalizedCurrentCity = normalizeCityName(detail.getCurrentCity());
+                if (normalizedCurrentCity.contains(normalizedSearchCity) ||
+                    normalizedSearchCity.contains(normalizedCurrentCity)) {
+                    cityMatched = true;
+                }
+            }
+            
+            // 匹配期望城市
+            if (detail.getExpectedCity() != null) {
+                String normalizedExpectedCity = normalizeCityName(detail.getExpectedCity());
+                if (normalizedExpectedCity.contains(normalizedSearchCity) ||
+                    normalizedSearchCity.contains(normalizedExpectedCity)) {
+                    cityMatched = true;
+                }
+            }
+            
+            if (!cityMatched) {
                 return false;
             }
         }
 
-        // 技能标签匹配
-        if (StringUtils.hasText(request.getSkillTags())) {
+        // 技能标签匹配（支持 skills 和 skillTags 两个参数）
+        String effectiveSkillTags = request.getEffectiveSkillTags();
+        if (StringUtils.hasText(effectiveSkillTags)) {
             if (detail.getSkillTags() == null) {
                 return false;
             }
-            String[] requiredSkills = request.getSkillTags().split(",");
+            String[] requiredSkills = effectiveSkillTags.split(",");
             String detailSkills = detail.getSkillTags().toLowerCase();
             for (String skill : requiredSkills) {
                 if (!detailSkills.contains(skill.trim().toLowerCase())) {
@@ -692,6 +832,23 @@ public class ResumeServiceImpl extends ServiceImpl<ResumeRepository, Resume> imp
         }
 
         return true;
+    }
+
+    /**
+     * 标准化城市名称，去掉"市"、"省"等后缀
+     * 例如："深圳市" -> "深圳"，"北京市" -> "北京"
+     */
+    private String normalizeCityName(String cityName) {
+        if (cityName == null || cityName.isEmpty()) {
+            return "";
+        }
+        // 去掉常见的行政区划后缀
+        return cityName
+                .replace("市", "")
+                .replace("省", "")
+                .replace("自治区", "")
+                .replace("特别行政区", "")
+                .trim();
     }
 
     /**

@@ -46,10 +46,29 @@ public interface IFileStorageService {
     String getPresignedUrl(String objectName, int expiry);
 
     /**
+     * 获取文件访问URL（带签名，有过期时间，指定存储桶）
+     *
+     * @param bucketName 存储桶名称
+     * @param objectName 对象名称
+     * @param expiry     过期时间（秒）
+     * @return 带签名的访问URL
+     */
+    String getPresignedUrl(String bucketName, String objectName, int expiry);
+
+    /**
      * 检查文件是否存在
      *
      * @param objectName 对象名称
      * @return 是否存在
      */
     boolean fileExists(String objectName);
+
+    /**
+     * 获取文件输入流
+     *
+     * @param bucketName 存储桶名称
+     * @param objectName 对象名称
+     * @return 文件输入流
+     */
+    java.io.InputStream getFileStream(String bucketName, String objectName);
 }

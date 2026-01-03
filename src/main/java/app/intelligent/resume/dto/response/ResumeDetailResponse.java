@@ -29,6 +29,9 @@ public class ResumeDetailResponse {
     @Schema(description = "用户ID")
     private Long userId;
 
+    @Schema(description = "用户昵称")
+    private String nickname;
+
     @Schema(description = "简历标题")
     private String title;
 
@@ -85,4 +88,7 @@ public class ResumeDetailResponse {
 
     @Schema(description = "分析报告")
     private AnalysisReport analysisReport;
+
+    @Schema(description = "校园经历JSON")
+    private String extraInfo;
 }
