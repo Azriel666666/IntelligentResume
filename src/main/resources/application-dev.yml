@@ -42,6 +42,9 @@ minio:
   # 简历存储桶
   resume-bucket: resume
   resume-url-prefix: http://localhost:9005/resume
+  # 聊天文件存储桶
+  chat-bucket: chat
+  chat-url-prefix: http://localhost:9005/chat
   # 默认存储桶（兼容旧代码）
   bucket-name: avatar
   url-prefix: http://localhost:9005/avatar

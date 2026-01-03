@@ -142,6 +142,16 @@ public enum ResultCode {
      */
     FILE_SIZE_EXCEEDED(4005, "文件大小超过限制"),
 
+    /**
+     * 文件不存在
+     */
+    FILE_NOT_FOUND(4006, "文件不存在"),
+
+    /**
+     * 文件下载失败
+     */
+    FILE_DOWNLOAD_FAILED(4007, "文件下载失败"),
+
     // ========== 验证码相关错误码 (5000-5099) ==========
 
     /**

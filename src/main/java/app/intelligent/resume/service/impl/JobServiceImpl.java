@@ -219,9 +219,9 @@ public class JobServiceImpl extends ServiceImpl<JobRepository, Job> implements I
             );
         }
         
-        // 城市筛选
+        // 城市筛选（使用模糊匹配以兼容不同格式）
         if (StrUtil.isNotBlank(request.getCity())) {
-            wrapper.eq(Job::getCity, request.getCity());
+            wrapper.like(Job::getCity, request.getCity());
         }
         
         // 薪资范围筛选

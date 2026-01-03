@@ -85,4 +85,7 @@ public class ResumeDetailResponse {
 
     @Schema(description = "分析报告")
     private AnalysisReport analysisReport;
+
+    @Schema(description = "校园经历JSON")
+    private String extraInfo;
 }

@@ -228,6 +228,8 @@ public class ResumeServiceImpl extends ServiceImpl<ResumeRepository, Resume> imp
         ResumeDetail detail = resumeDetailService.getByResumeId(id);
         if (detail != null) {
             response.setDetail(convertToResumeDetailDTO(detail));
+            // 设置校园经历
+            response.setExtraInfo(detail.getExtraInfo());
         }
 
         // 5. 获取分析报告
@@ -401,9 +403,98 @@ public class ResumeServiceImpl extends ServiceImpl<ResumeRepository, Resume> imp
         // 3. 增加下载次数
         incrementDownloadCount(id);
 
-        // 4. 返回文件URL（可以返回预签名URL以增加安全性）
-        log.info("下载简历, resumeId={}", id);
-        return resume.getFileUrl();
+        // 4. 从 fileUrl 中提取对象名称，生成预签名 URL
+        String fileUrl = resume.getFileUrl();
+        String objectName = extractObjectNameFromUrl(fileUrl);
+        
+        // 生成有效期为 1 小时的预签名 URL（使用 resume 存储桶）
+        String presignedUrl = fileStorageService.getPresignedUrl("resume", objectName, 3600);
+        
+        log.info("下载简历, resumeId={}, presignedUrl={}", id, presignedUrl);
+        return presignedUrl;
+    }
+
+    /**
+     * 从文件 URL 中提取对象名称
+     * 例如: http://localhost:9005/resume/resume/2026/01/03/xxx.docx -> resume/2026/01/03/xxx.docx
+     */
+    private String extractObjectNameFromUrl(String fileUrl) {
+        if (fileUrl == null || fileUrl.isEmpty()) {
+            return null;
+        }
+        
+        // 查找 /resume/ 后面的路径作为对象名称
+        // URL 格式: http://localhost:9005/resume/resume/2026/01/03/xxx.docx
+        // 存储桶名: resume
+        // 对象名称: resume/2026/01/03/xxx.docx
+        int bucketIndex = fileUrl.indexOf("/resume/");
+        if (bucketIndex != -1) {
+            // 跳过 /resume/ 获取对象名称
+            return fileUrl.substring(bucketIndex + 8); // 8 = "/resume/".length()
+        }
+        
+        // 如果不是标准格式，尝试获取最后的路径部分
+        int lastSlashIndex = fileUrl.lastIndexOf("/");
+        if (lastSlashIndex != -1) {
+            return fileUrl.substring(lastSlashIndex + 1);
+        }
+        
+        return fileUrl;
+    }
+
+    @Override
+    public void downloadResumeFile(Long id, jakarta.servlet.http.HttpServletResponse response) {
+        // 1. 获取简历
+        Resume resume = getById(id);
+        if (resume == null) {
+            throw new BusinessException(ResultCode.RESUME_NOT_EXIST);
+        }
+
+        // 2. 检查文件是否存在
+        if (!StringUtils.hasText(resume.getFileUrl())) {
+            throw new BusinessException(ResultCode.RESUME_FILE_NOT_EXIST);
+        }
+
+        // 3. 增加下载次数
+        incrementDownloadCount(id);
+
+        // 4. 从 fileUrl 中提取对象名称
+        String fileUrl = resume.getFileUrl();
+        String objectName = extractObjectNameFromUrl(fileUrl);
+        
+        log.info("下载简历文件, resumeId={}, objectName={}", id, objectName);
+
+        // 5. 设置响应头
+        String fileName = resume.getFileName();
+        if (!StringUtils.hasText(fileName)) {
+            fileName = "resume." + resume.getFileType();
+        }
+        
+        try {
+            // 对文件名进行 URL 编码，处理中文文件名
+            String encodedFileName = java.net.URLEncoder.encode(fileName, "UTF-8").replace("+", "%20");
+            
+            response.setContentType("application/octet-stream");
+            response.setHeader("Content-Disposition", "attachment; filename=\"" + encodedFileName + "\"; filename*=UTF-8''" + encodedFileName);
+            response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
+            
+            // 6. 获取文件流并写入响应
+            try (java.io.InputStream inputStream = fileStorageService.getFileStream("resume", objectName);
+                 java.io.OutputStream outputStream = response.getOutputStream()) {
+                
+                byte[] buffer = new byte[8192];
+                int bytesRead;
+                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, bytesRead);
+                }
+                outputStream.flush();
+            }
+            
+            log.info("简历文件下载成功, resumeId={}, fileName={}", id, fileName);
+        } catch (java.io.IOException e) {
+            log.error("简历文件下载失败, resumeId={}", id, e);
+            throw new BusinessException(ResultCode.FILE_DOWNLOAD_FAILED);
+        }
     }
 
     // ========== 原有方法实现 ==========

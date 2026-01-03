@@ -125,12 +125,21 @@ public class ResumeParserServiceImpl implements IResumeParserService {
 
     // ========== 项目经历正则 ==========
     
-    /** 项目经历正则 - 匹配：时间段 项目名 角色 */
-    private static final Pattern PROJECT_ENTRY_PATTERN = Pattern.compile(
+    /** 项目经历正则 - 匹配：时间段 项目名 角色 - 更宽松的匹配 */
+    private static final Pattern[] PROJECT_ENTRY_PATTERNS = {
+        // 格式1：2024.12—2025.01 全域协同中枢系统 Java开发工程师
+        Pattern.compile(
             "(\\d{4}[./-]\\d{1,2})\\s*[-—~至到]+\\s*(\\d{4}[./-]\\d{1,2}|至今)\\s+" +
-            "([\\u4e00-\\u9fa5a-zA-Z0-9]+(?:系统|平台|项目|APP|网站|服务|中枢|创作)[\\u4e00-\\u9fa5a-zA-Z0-9]*)\\s*" +
-            "([\\u4e00-\\u9fa5a-zA-Z]*(?:开发|工程师|设计|负责人|成员)?)?"
-    );
+            "([\\u4e00-\\u9fa5a-zA-Z0-9]+(?:系统|平台|项目|APP|网站|服务|中枢|创作|商城|管理|后台)[\\u4e00-\\u9fa5a-zA-Z0-9]*)\\s*" +
+            "([\\u4e00-\\u9fa5a-zA-Z]*(?:开发|工程师|设计|负责人|成员|实习)?)?"
+        ),
+        // 格式2：时间段 + 任意项目名（不要求特定后缀）
+        Pattern.compile(
+            "(\\d{4}[./-]\\d{1,2})\\s*[-—~至到]+\\s*(\\d{4}[./-]\\d{1,2}|至今)\\s+" +
+            "([\\u4e00-\\u9fa5a-zA-Z0-9]{2,20})\\s+" +
+            "([\\u4e00-\\u9fa5a-zA-Z]+(?:开发|工程师|设计师|负责人|成员))?"
+        ),
+    };
 
     // ========== 技能正则 ==========
     
@@ -472,26 +481,144 @@ public class ResumeParserServiceImpl implements IResumeParserService {
         }
     }
 
+    // ========== 区块标题关键词 ==========
+    
+    /** 所有可能的区块标题 */
+    private static final String[] SECTION_TITLES = {
+        "教育背景", "教育经历", "学历",
+        "个人技能", "专业技能", "技能特长", "技术栈",
+        "实习经历", "工作经历", "工作经验",
+        "实践经历", "项目经历", "项目经验",
+        "校园经历", "校园活动", "社团经历",
+        "自我评价", "个人简介", "自我介绍",
+        "获奖情况", "荣誉奖项", "证书"
+    };
+
+    /**
+     * 将简历内容按区块分割
+     * @param content 简历全文
+     * @return 区块名称 -> 区块内容 的映射
+     */
+    private Map<String, String> splitIntoSections(String content) {
+        Map<String, String> sections = new LinkedHashMap<>();
+        
+        // 构建区块标题的正则模式 - 更宽松的匹配
+        String titlePattern = String.join("|", SECTION_TITLES);
+        // 匹配多种格式：● 标题、标题：、标题\n 等
+        Pattern sectionPattern = Pattern.compile(
+            "(?:^|\\n|\\r)\\s*(?:●\\s*|■\\s*|▪\\s*|•\\s*)?(" + titlePattern + ")\\s*[：:]*\\s*(?=\\n|\\r|$|[^\\u4e00-\\u9fa5])",
+            Pattern.CASE_INSENSITIVE | Pattern.MULTILINE
+        );
+        
+        Matcher matcher = sectionPattern.matcher(content);
+        List<int[]> sectionPositions = new ArrayList<>();
+        List<String> sectionNames = new ArrayList<>();
+        
+        while (matcher.find()) {
+            sectionPositions.add(new int[]{matcher.start(), matcher.end()});
+            sectionNames.add(matcher.group(1).trim());
+            log.debug("【区块识别】找到区块: {} 位置: {}-{}", matcher.group(1), matcher.start(), matcher.end());
+        }
+        
+        log.info("【简历解析】找到 {} 个区块标题: {}", sectionPositions.size(), sectionNames);
+        
+        // 提取每个区块的内容
+        for (int i = 0; i < sectionPositions.size(); i++) {
+            int start = sectionPositions.get(i)[1]; // 标题结束位置
+            int end = (i + 1 < sectionPositions.size()) 
+                    ? sectionPositions.get(i + 1)[0]  // 下一个区块开始位置
+                    : content.length();
+            
+            String sectionContent = content.substring(start, end).trim();
+            String sectionName = sectionNames.get(i);
+            
+            // 标准化区块名称
+            sectionName = normalizeSectionName(sectionName);
+            
+            if (StringUtils.hasText(sectionContent)) {
+                sections.put(sectionName, sectionContent);
+                log.debug("【区块内容】{}: {} 字符", sectionName, sectionContent.length());
+            }
+        }
+        
+        log.info("【简历解析】识别到的区块: {}", sections.keySet());
+        return sections;
+    }
+
+    /**
+     * 标准化区块名称
+     */
+    private String normalizeSectionName(String name) {
+        if (name.contains("教育")) return "教育背景";
+        if (name.contains("技能") || name.contains("技术")) return "个人技能";
+        if (name.contains("实习") || name.contains("工作")) return "工作经历";
+        if (name.contains("项目") || name.contains("实践")) return "项目经历";
+        if (name.contains("校园") || name.contains("社团")) return "校园经历";
+        if (name.contains("自我") || name.contains("简介")) return "自我评价";
+        if (name.contains("获奖") || name.contains("荣誉") || name.contains("证书")) return "荣誉奖项";
+        return name;
+    }
+
     /**
      * 提取自我评价
      */
     private String extractSelfEvaluation(String content) {
-        // 匹配自我评价区块
-        Pattern pattern = Pattern.compile(
-                "(?:●\\s*)?(?:自我评价|个人简介|自我介绍)[\\s\\S]*?(?=●|$)",
-                Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(content);
-        if (matcher.find()) {
-            String evaluation = matcher.group()
-                    .replaceFirst("(?:●\\s*)?(?:自我评价|个人简介|自我介绍)[：:\\s]*", "")
-                    .trim();
-            // 清理多余空白
-            evaluation = evaluation.replaceAll("\\s+", " ");
-            if (evaluation.length() > 10) {
+        // 先尝试通过区块分割获取
+        Map<String, String> sections = splitIntoSections(content);
+        String evaluation = sections.get("自我评价");
+        
+        if (StringUtils.hasText(evaluation)) {
+            evaluation = cleanSpecialCharacters(evaluation);
+            evaluation = evaluation.replaceAll("\\s+", " ").trim();
+            // 验证内容有效性
+            if (evaluation.length() > 10 && evaluation.length() < 1000 
+                && !evaluation.contains("项目介绍") 
+                && !evaluation.contains("个人职责")
+                && !evaluation.matches(".*\\d{4}[./-]\\d{1,2}.*")) {
                 return evaluation;
             }
         }
+        
+        // 兜底：使用正则匹配
+        Pattern[] patterns = {
+            Pattern.compile("(?:●\\s*)?(?:自我评价|个人简介|自我介绍)[：:\\s]*\\n?([^●]+?)(?=●|\\n\\s*(?:教育|技能|项目|工作|实习|校园)|$)", Pattern.CASE_INSENSITIVE),
+        };
+        
+        for (Pattern pattern : patterns) {
+            Matcher matcher = pattern.matcher(content);
+            if (matcher.find()) {
+                evaluation = matcher.group(1).trim();
+                evaluation = cleanSpecialCharacters(evaluation);
+                evaluation = evaluation.replaceAll("\\s+", " ").trim();
+                
+                if (evaluation.length() > 10 && evaluation.length() < 1000 
+                    && !evaluation.contains("项目介绍") 
+                    && !evaluation.contains("个人职责")
+                    && !evaluation.matches(".*\\d{4}[./-]\\d{1,2}.*")) {
+                    return evaluation;
+                }
+            }
+        }
         return null;
+    }
+
+    /**
+     * 清理特殊字符（方框、乱码等）
+     */
+    private String cleanSpecialCharacters(String text) {
+        if (text == null) return null;
+        return text
+                // 移除Unicode替换字符（方框）
+                .replaceAll("[\ufffd\ufffe\uffff]", "")
+                // 移除其他常见乱码字符
+                .replaceAll("[\\x00-\\x08\\x0b\\x0c\\x0e-\\x1f]", "")
+                // 移除私有区域字符
+                .replaceAll("[\\ue000-\\uf8ff]", "")
+                // 移除零宽字符
+                .replaceAll("[\\u200b-\\u200f\\u2028-\\u202f\\u205f-\\u206f]", "")
+                // 移除其他不可见字符
+                .replaceAll("[\\p{Cc}\\p{Cf}\\p{Co}\\p{Cn}]", "")
+                .trim();
     }
 
     /**
@@ -500,45 +627,55 @@ public class ResumeParserServiceImpl implements IResumeParserService {
     private String extractEducationJson(String content) {
         List<Map<String, Object>> eduList = new ArrayList<>();
         
-        // 查找教育背景区块
-        Pattern sectionPattern = Pattern.compile(
-                "(?:●\\s*)?(?:教育背景|教育经历|学历)[\\s\\S]*?(?=●\\s*(?:个人技能|实习|工作|项目|自我)|$)",
-                Pattern.CASE_INSENSITIVE);
-        Matcher sectionMatcher = sectionPattern.matcher(content);
+        // 使用区块分割获取教育背景区块
+        Map<String, String> sections = splitIntoSections(content);
+        String section = sections.get("教育背景");
         
-        if (sectionMatcher.find()) {
-            String section = sectionMatcher.group();
+        if (!StringUtils.hasText(section)) {
+            // 兜底：使用正则匹配
+            Pattern sectionPattern = Pattern.compile(
+                    "(?:●\\s*)?(?:教育背景|教育经历|学历)[：:\\s]*([\\s\\S]*?)(?=●\\s*(?:个人技能|实习|工作|项目|自我)|$)",
+                    Pattern.CASE_INSENSITIVE);
+            Matcher sectionMatcher = sectionPattern.matcher(content);
             
-            // 匹配教育条目：时间 学校 专业
-            Matcher entryMatcher = EDUCATION_ENTRY_PATTERN.matcher(section);
-            while (entryMatcher.find()) {
-                Map<String, Object> edu = new HashMap<>();
-                edu.put("startDate", entryMatcher.group(1));
-                edu.put("endDate", entryMatcher.group(2));
-                edu.put("school", entryMatcher.group(3));
-                edu.put("major", entryMatcher.group(4));
-                eduList.add(edu);
+            if (sectionMatcher.find()) {
+                section = sectionMatcher.group(1);
             }
-            
-            // 提取主修课程
-            Pattern coursePattern = Pattern.compile("主修课程[：:\\s]*([^\\n]+)");
-            Matcher courseMatcher = coursePattern.matcher(section);
-            if (courseMatcher.find() && !eduList.isEmpty()) {
-                eduList.get(0).put("courses", courseMatcher.group(1).trim());
-            }
-            
-            // 提取校内荣誉
-            Pattern honorPattern = Pattern.compile("校内荣誉[：:\\s]*([^\\n]+)");
-            Matcher honorMatcher = honorPattern.matcher(section);
-            if (honorMatcher.find() && !eduList.isEmpty()) {
-                eduList.get(0).put("honors", honorMatcher.group(1).trim());
-            }
-            
-            // 提取专业成绩
-            Matcher gpaMatcher = GPA_PATTERN.matcher(section);
-            if (gpaMatcher.find() && !eduList.isEmpty()) {
-                eduList.get(0).put("gpa", gpaMatcher.group(1));
-            }
+        }
+        
+        if (!StringUtils.hasText(section)) {
+            return null;
+        }
+        
+        // 匹配教育条目：时间 学校 专业
+        Matcher entryMatcher = EDUCATION_ENTRY_PATTERN.matcher(section);
+        while (entryMatcher.find()) {
+            Map<String, Object> edu = new HashMap<>();
+            edu.put("startDate", entryMatcher.group(1));
+            edu.put("endDate", entryMatcher.group(2));
+            edu.put("school", entryMatcher.group(3));
+            edu.put("major", entryMatcher.group(4));
+            eduList.add(edu);
+        }
+        
+        // 提取主修课程
+        Pattern coursePattern = Pattern.compile("主修课程[：:\\s]*([^\\n]+)");
+        Matcher courseMatcher = coursePattern.matcher(section);
+        if (courseMatcher.find() && !eduList.isEmpty()) {
+            eduList.get(0).put("courses", courseMatcher.group(1).trim());
+        }
+        
+        // 提取校内荣誉
+        Pattern honorPattern = Pattern.compile("校内荣誉[：:\\s]*([^\\n]+)");
+        Matcher honorMatcher = honorPattern.matcher(section);
+        if (honorMatcher.find() && !eduList.isEmpty()) {
+            eduList.get(0).put("honors", honorMatcher.group(1).trim());
+        }
+        
+        // 提取专业成绩
+        Matcher gpaMatcher = GPA_PATTERN.matcher(section);
+        if (gpaMatcher.find() && !eduList.isEmpty()) {
+            eduList.get(0).put("gpa", gpaMatcher.group(1));
         }
         
         try {
@@ -555,34 +692,59 @@ public class ResumeParserServiceImpl implements IResumeParserService {
     private String extractWorkExperienceJson(String content) {
         List<Map<String, Object>> workList = new ArrayList<>();
         
-        // 查找实习经历区块
-        Pattern sectionPattern = Pattern.compile(
-                "(?:●\\s*)?(?:实习经历|工作经历|工作经验)[\\s\\S]*?(?=●\\s*(?:项目|校园|自我|教育)|$)",
-                Pattern.CASE_INSENSITIVE);
-        Matcher sectionMatcher = sectionPattern.matcher(content);
+        // 使用区块分割获取工作经历区块
+        Map<String, String> sections = splitIntoSections(content);
+        String section = sections.get("工作经历");
         
-        if (sectionMatcher.find()) {
-            String section = sectionMatcher.group();
+        if (!StringUtils.hasText(section)) {
+            // 兜底：使用正则匹配
+            Pattern sectionPattern = Pattern.compile(
+                    "(?:●\\s*)?(?:实习经历|工作经历|工作经验)[：:\\s]*([\\s\\S]*?)(?=●\\s*(?:项目|校园|自我|教育|个人技能)|$)",
+                    Pattern.CASE_INSENSITIVE);
+            Matcher sectionMatcher = sectionPattern.matcher(content);
             
-            // 匹配工作条目
-            Matcher entryMatcher = WORK_ENTRY_PATTERN.matcher(section);
-            while (entryMatcher.find()) {
-                Map<String, Object> work = new HashMap<>();
-                work.put("startDate", entryMatcher.group(1));
-                work.put("endDate", entryMatcher.group(2));
-                work.put("company", entryMatcher.group(3));
-                work.put("position", entryMatcher.group(4));
-                
-                // 提取工作描述
-                int endPos = entryMatcher.end();
-                String remaining = section.substring(endPos);
-                Pattern descPattern = Pattern.compile("工作描述[：:\\s]*([\\s\\S]*?)(?=\\d{4}[./-]|$)");
-                Matcher descMatcher = descPattern.matcher(remaining);
-                if (descMatcher.find()) {
-                    work.put("description", cleanDescription(descMatcher.group(1)));
+            if (sectionMatcher.find()) {
+                section = sectionMatcher.group(1);
+            }
+        }
+        
+        if (!StringUtils.hasText(section)) {
+            return null;
+        }
+        
+        // 匹配工作条目
+        Matcher entryMatcher = WORK_ENTRY_PATTERN.matcher(section);
+        List<int[]> entryPositions = new ArrayList<>();
+        
+        while (entryMatcher.find()) {
+            Map<String, Object> work = new HashMap<>();
+            work.put("startDate", entryMatcher.group(1));
+            work.put("endDate", entryMatcher.group(2));
+            work.put("company", entryMatcher.group(3));
+            work.put("position", entryMatcher.group(4));
+            workList.add(work);
+            entryPositions.add(new int[]{entryMatcher.start(), entryMatcher.end()});
+        }
+        
+        // 为每个工作经历提取描述
+        for (int i = 0; i < workList.size(); i++) {
+            int descStart = entryPositions.get(i)[1];
+            int descEnd = (i + 1 < entryPositions.size()) 
+                    ? entryPositions.get(i + 1)[0] 
+                    : section.length();
+            
+            String desc = section.substring(descStart, descEnd).trim();
+            
+            // 提取工作描述
+            Pattern descPattern = Pattern.compile("工作描述[：:\\s]*([\\s\\S]*)");
+            Matcher descMatcher = descPattern.matcher(desc);
+            if (descMatcher.find()) {
+                String workDesc = cleanDescription(descMatcher.group(1));
+                if (StringUtils.hasText(workDesc)) {
+                    workList.get(i).put("description", workDesc);
                 }
-                
-                workList.add(work);
+            } else if (desc.length() > 10) {
+                workList.get(i).put("description", cleanDescription(desc));
             }
         }
         
@@ -600,52 +762,90 @@ public class ResumeParserServiceImpl implements IResumeParserService {
     private String extractProjectExperienceJson(String content) {
         List<Map<String, Object>> projectList = new ArrayList<>();
         
-        // 查找实践经历/项目经历区块
-        Pattern sectionPattern = Pattern.compile(
-                "(?:●\\s*)?(?:实践经历|项目经历|项目经验)[\\s\\S]*?(?=●\\s*(?:校园|自我|教育|实习)|$)",
-                Pattern.CASE_INSENSITIVE);
-        Matcher sectionMatcher = sectionPattern.matcher(content);
+        // 使用区块分割获取项目经历区块
+        Map<String, String> sections = splitIntoSections(content);
+        String section = sections.get("项目经历");
         
-        if (sectionMatcher.find()) {
-            String section = sectionMatcher.group();
+        if (!StringUtils.hasText(section)) {
+            // 兜底：使用正则匹配
+            Pattern sectionPattern = Pattern.compile(
+                    "(?:●\\s*)?(?:实践经历|项目经历|项目经验)[：:\\s]*([\\s\\S]*?)(?=●\\s*(?:校园|自我|教育|实习|工作|个人技能)|$)",
+                    Pattern.CASE_INSENSITIVE);
+            Matcher sectionMatcher = sectionPattern.matcher(content);
             
-            // 匹配项目条目
-            Matcher entryMatcher = PROJECT_ENTRY_PATTERN.matcher(section);
-            int lastEnd = 0;
-            Map<String, Object> currentProject = null;
-            
+            if (sectionMatcher.find()) {
+                section = sectionMatcher.group(1);
+            }
+        }
+        
+        if (!StringUtils.hasText(section)) {
+            log.warn("【项目经历】未找到项目经历区块");
+            return null;
+        }
+        
+        log.info("【项目经历区块】长度: {}, 内容前300字: {}", section.length(), 
+                section.substring(0, Math.min(300, section.length())));
+        
+        // 使用多个正则模式匹配项目条目
+        List<int[]> entryPositions = new ArrayList<>();
+        
+        for (Pattern pattern : PROJECT_ENTRY_PATTERNS) {
+            Matcher entryMatcher = pattern.matcher(section);
             while (entryMatcher.find()) {
-                // 保存上一个项目的描述
-                if (currentProject != null && lastEnd > 0) {
-                    String desc = section.substring(lastEnd, entryMatcher.start()).trim();
-                    if (desc.length() > 10) {
-                        currentProject.put("description", cleanDescription(desc));
+                // 检查是否已经匹配过这个位置
+                boolean alreadyMatched = false;
+                for (int[] pos : entryPositions) {
+                    if (Math.abs(pos[0] - entryMatcher.start()) < 10) {
+                        alreadyMatched = true;
+                        break;
                     }
                 }
                 
-                currentProject = new HashMap<>();
-                currentProject.put("startDate", entryMatcher.group(1));
-                currentProject.put("endDate", entryMatcher.group(2));
-                currentProject.put("projectName", entryMatcher.group(3));
-                if (entryMatcher.group(4) != null && !entryMatcher.group(4).isEmpty()) {
-                    currentProject.put("role", entryMatcher.group(4));
-                }
-                
-                projectList.add(currentProject);
-                lastEnd = entryMatcher.end();
-            }
-            
-            // 处理最后一个项目的描述
-            if (currentProject != null && lastEnd > 0 && lastEnd < section.length()) {
-                String desc = section.substring(lastEnd).trim();
-                if (desc.length() > 10) {
-                    currentProject.put("description", cleanDescription(desc));
+                if (!alreadyMatched) {
+                    Map<String, Object> project = new HashMap<>();
+                    project.put("startDate", entryMatcher.group(1));
+                    project.put("endDate", entryMatcher.group(2));
+                    project.put("projectName", entryMatcher.group(3));
+                    if (entryMatcher.groupCount() >= 4 && entryMatcher.group(4) != null && !entryMatcher.group(4).isEmpty()) {
+                        project.put("role", entryMatcher.group(4));
+                    }
+                    projectList.add(project);
+                    entryPositions.add(new int[]{entryMatcher.start(), entryMatcher.end()});
+                    log.debug("【项目匹配】找到项目: {}", entryMatcher.group(3));
                 }
             }
+        }
+        
+        // 按位置排序 - 使用final变量避免lambda问题
+        final List<int[]> positionsForSort = entryPositions;
+        List<Integer> sortedIndices = new ArrayList<>();
+        for (int i = 0; i < positionsForSort.size(); i++) {
+            sortedIndices.add(i);
+        }
+        sortedIndices.sort((a, b) -> positionsForSort.get(a)[0] - positionsForSort.get(b)[0]);
+        
+        List<Map<String, Object>> sortedProjects = new ArrayList<>();
+        List<int[]> sortedPositions = new ArrayList<>();
+        for (int idx : sortedIndices) {
+            sortedProjects.add(projectList.get(idx));
+            sortedPositions.add(positionsForSort.get(idx));
+        }
+        projectList = sortedProjects;
+        entryPositions = sortedPositions;
+        
+        log.info("【项目经历】找到 {} 个项目", projectList.size());
+        
+        // 为每个项目提取描述内容
+        for (int i = 0; i < projectList.size(); i++) {
+            int descStart = entryPositions.get(i)[1];
+            int descEnd = (i + 1 < entryPositions.size()) 
+                    ? entryPositions.get(i + 1)[0] 
+                    : section.length();
             
-            // 提取项目介绍和个人职责
-            for (Map<String, Object> project : projectList) {
-                extractProjectDetails(section, project);
+            String desc = section.substring(descStart, descEnd).trim();
+            if (desc.length() > 10) {
+                // 提取项目介绍和个人职责
+                extractProjectDetailsFromDesc(desc, projectList.get(i));
             }
         }
         
@@ -658,35 +858,38 @@ public class ResumeParserServiceImpl implements IResumeParserService {
     }
 
     /**
-     * 提取项目详情（项目介绍、个人职责）
+     * 从项目描述中提取详情
      */
-    private void extractProjectDetails(String section, Map<String, Object> project) {
-        String projectName = (String) project.get("projectName");
-        if (projectName == null) return;
-        
-        // 查找该项目的详细描述区域
-        int nameIndex = section.indexOf(projectName);
-        if (nameIndex < 0) return;
-        
-        String projectSection = section.substring(nameIndex);
-        // 截取到下一个项目或区块结束
-        int nextProjectIndex = projectSection.indexOf("\n20", 10); // 下一个时间开头
-        if (nextProjectIndex > 0) {
-            projectSection = projectSection.substring(0, nextProjectIndex);
-        }
+    private void extractProjectDetailsFromDesc(String desc, Map<String, Object> project) {
+        // 清理描述
+        desc = cleanSpecialCharacters(desc);
         
         // 提取项目介绍
-        Pattern introPattern = Pattern.compile("项目介绍[：:\\s]*([^●\\n][\\s\\S]*?)(?=个人职责|$)");
-        Matcher introMatcher = introPattern.matcher(projectSection);
+        Pattern introPattern = Pattern.compile("项目介绍[：:\\s]*([\\s\\S]*?)(?=个人职责|$)");
+        Matcher introMatcher = introPattern.matcher(desc);
         if (introMatcher.find()) {
-            project.put("introduction", cleanDescription(introMatcher.group(1)));
+            String intro = cleanDescription(introMatcher.group(1));
+            if (StringUtils.hasText(intro)) {
+                project.put("introduction", intro);
+            }
         }
         
         // 提取个人职责
-        Pattern dutyPattern = Pattern.compile("个人职责[：:\\s]*([\\s\\S]*?)(?=\\d{4}[./-]|●|$)");
-        Matcher dutyMatcher = dutyPattern.matcher(projectSection);
+        Pattern dutyPattern = Pattern.compile("个人职责[：:\\s]*([\\s\\S]*)");
+        Matcher dutyMatcher = dutyPattern.matcher(desc);
         if (dutyMatcher.find()) {
-            project.put("duties", cleanDescription(dutyMatcher.group(1)));
+            String duties = cleanDescription(dutyMatcher.group(1));
+            if (StringUtils.hasText(duties)) {
+                project.put("duties", duties);
+            }
+        }
+        
+        // 如果没有明确的项目介绍/个人职责格式，整体作为描述
+        if (!project.containsKey("introduction") && !project.containsKey("duties")) {
+            String cleanedDesc = cleanDescription(desc);
+            if (StringUtils.hasText(cleanedDesc) && cleanedDesc.length() > 10) {
+                project.put("description", cleanedDesc);
+            }
         }
     }
 
@@ -697,31 +900,61 @@ public class ResumeParserServiceImpl implements IResumeParserService {
     private String extractCampusExperience(String content) {
         List<Map<String, Object>> campusList = new ArrayList<>();
         
-        // 查找校园经历区块
-        Pattern sectionPattern = Pattern.compile(
-                "(?:●\\s*)?校园经历[\\s\\S]*?(?=●\\s*(?:自我|项目|实习|工作)|$)",
-                Pattern.CASE_INSENSITIVE);
-        Matcher sectionMatcher = sectionPattern.matcher(content);
+        // 使用区块分割获取校园经历区块
+        Map<String, String> sections = splitIntoSections(content);
+        String section = sections.get("校园经历");
         
-        if (sectionMatcher.find()) {
-            String section = sectionMatcher.group();
+        if (!StringUtils.hasText(section)) {
+            // 兜底：使用正则匹配
+            Pattern sectionPattern = Pattern.compile(
+                    "(?:●\\s*)?(?:校园经历|校园活动|社团经历)[：:\\s]*([\\s\\S]*?)(?=●\\s*(?:自我|项目|实习|工作|教育|个人技能)|$)",
+                    Pattern.CASE_INSENSITIVE);
+            Matcher sectionMatcher = sectionPattern.matcher(content);
             
-            // 匹配校园经历条目：时间 组织/活动 角色
-            Pattern entryPattern = Pattern.compile(
-                    "(\\d{4}[./-]\\d{1,2})\\s*[-—~至到]+\\s*(\\d{4}[./-]\\d{1,2}|至今)\\s+" +
-                    "([\\u4e00-\\u9fa5]+(?:大学|学院|协会|社团|大赛|比赛)[\\u4e00-\\u9fa5]*)\\s*" +
-                    "([\\u4e00-\\u9fa5]+(?:成员|部长|主席|负责人|干事)?)?");
+            if (sectionMatcher.find()) {
+                section = sectionMatcher.group(1);
+            }
+        }
+        
+        if (!StringUtils.hasText(section)) {
+            return null;
+        }
+        
+        // 匹配校园经历条目：时间 组织/活动 角色
+        Pattern entryPattern = Pattern.compile(
+                "(\\d{4}[./-]\\d{1,2})\\s*[-—~至到]+\\s*(\\d{4}[./-]\\d{1,2}|至今)\\s+" +
+                "([\\u4e00-\\u9fa5]+(?:大学|学院|协会|社团|大赛|比赛|计算机|技术)[\\u4e00-\\u9fa5]*)\\s*" +
+                "([\\u4e00-\\u9fa5]+(?:成员|部长|主席|负责人|干事)?)?");
+        
+        Matcher entryMatcher = entryPattern.matcher(section);
+        List<int[]> entryPositions = new ArrayList<>();
+        
+        while (entryMatcher.find()) {
+            Map<String, Object> campus = new HashMap<>();
+            campus.put("startDate", entryMatcher.group(1));
+            campus.put("endDate", entryMatcher.group(2));
+            campus.put("organization", entryMatcher.group(3));
+            if (entryMatcher.group(4) != null) {
+                campus.put("role", entryMatcher.group(4));
+            }
+            campusList.add(campus);
+            entryPositions.add(new int[]{entryMatcher.start(), entryMatcher.end()});
+        }
+        
+        // 为每个校园经历提取描述
+        for (int i = 0; i < campusList.size(); i++) {
+            int descStart = entryPositions.get(i)[1];
+            int descEnd = (i + 1 < entryPositions.size()) 
+                    ? entryPositions.get(i + 1)[0] 
+                    : section.length();
             
-            Matcher entryMatcher = entryPattern.matcher(section);
-            while (entryMatcher.find()) {
-                Map<String, Object> campus = new HashMap<>();
-                campus.put("startDate", entryMatcher.group(1));
-                campus.put("endDate", entryMatcher.group(2));
-                campus.put("organization", entryMatcher.group(3));
-                if (entryMatcher.group(4) != null) {
-                    campus.put("role", entryMatcher.group(4));
+            String desc = section.substring(descStart, descEnd).trim();
+            if (desc.length() > 5) {
+                desc = cleanSpecialCharacters(desc);
+                desc = cleanDescription(desc);
+                if (StringUtils.hasText(desc)) {
+                    campusList.get(i).put("description", desc);
                 }
-                campusList.add(campus);
             }
         }
         
@@ -738,6 +971,8 @@ public class ResumeParserServiceImpl implements IResumeParserService {
      */
     private String cleanDescription(String text) {
         if (text == null) return null;
+        // 先清理特殊字符
+        text = cleanSpecialCharacters(text);
         return text
                 .replaceAll("^[●•\\-\\s]+", "") // 去除开头的符号
                 .replaceAll("[●•]", "\n") // 将项目符号转为换行

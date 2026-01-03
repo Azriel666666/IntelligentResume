@@ -253,9 +253,9 @@ public class AuthServiceImpl implements IAuthService {
             // 11. 标记请求ID已处理
             markRequestIdProcessed(request.getRequestId());
 
-            // 12. 生成Token并返回
-            String accessToken = tokenProvider.generateToken(user.getUsername());
-            String refreshToken = tokenProvider.generateRefreshToken(user.getUsername());
+            // 12. 生成Token并返回（使用手机号，因为UserDetailsServiceImpl.loadUserByUsername期望手机号）
+            String accessToken = tokenProvider.generateToken(user.getPhone());
+            String refreshToken = tokenProvider.generateRefreshToken(user.getPhone());
 
             UserResponse userResponse = BeanUtil.copyProperties(user, UserResponse.class);
 
