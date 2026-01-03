@@ -38,6 +38,11 @@ public class RedisKeyConstants {
     public static final String REGISTER_LOCK_PREFIX = "register_lock:";
 
     /**
+     * 重置密码分布式锁Key前缀：reset_password_lock:{phone}
+     */
+    public static final String RESET_PASSWORD_LOCK_PREFIX = "reset_password_lock:";
+
+    /**
      * 验证码错误重试次数Key前缀：verify_code_retry:{phone}
      */
     public static final String VERIFY_CODE_RETRY_PREFIX = "verify_code_retry:";
@@ -105,6 +110,13 @@ public class RedisKeyConstants {
      */
     public static String buildRegisterLockKey(String phone) {
         return REGISTER_LOCK_PREFIX + phone;
+    }
+
+    /**
+     * 构建重置密码分布式锁Key
+     */
+    public static String buildResetPasswordLockKey(String phone) {
+        return RESET_PASSWORD_LOCK_PREFIX + phone;
     }
 
     /**

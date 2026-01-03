@@ -230,6 +230,11 @@ public enum ResultCode {
     REGISTER_LOCK_FAILED(5015, "注册处理中，请稍候再试"),
 
     /**
+     * 获取重置密码锁失败
+     */
+    RESET_PASSWORD_LOCK_FAILED(5020, "重置密码处理中，请稍候再试"),
+
+    /**
      * 密码不一致
      */
     PASSWORD_NOT_MATCH(5016, "两次输入的密码不一致"),

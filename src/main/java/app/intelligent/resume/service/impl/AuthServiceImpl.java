@@ -9,6 +9,7 @@ import app.intelligent.resume.common.util.PhoneValidator;
 import app.intelligent.resume.dto.request.LoginRequest;
 import app.intelligent.resume.dto.request.PhoneRegisterRequest;
 import app.intelligent.resume.dto.request.RegisterRequest;
+import app.intelligent.resume.dto.request.ResetPasswordRequest;
 import app.intelligent.resume.dto.response.LoginResponse;
 import app.intelligent.resume.dto.response.UserResponse;
 import app.intelligent.resume.entity.User;
@@ -303,5 +304,74 @@ public class AuthServiceImpl implements IAuthService {
     private void markRequestIdProcessed(String requestId) {
         String key = RedisKeyConstants.buildRequestIdKey(requestId);
         redisTemplate.opsForValue().set(key, true, 5, TimeUnit.MINUTES);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void resetPassword(ResetPasswordRequest request) {
+        log.info("开始重置密码流程, phone={}", request.getPhone());
+
+        // 1. 验证手机号格式
+        PhoneValidator.validate(request.getPhone());
+
+        // 2. 验证密码格式和一致性
+        PasswordValidator.validate(request.getNewPassword());
+        if (!request.getNewPassword().equals(request.getConfirmPassword())) {
+            throw new BusinessException(ResultCode.PASSWORD_NOT_MATCH);
+        }
+
+        // 3. 验证验证码（直接验证，不需要预先验证）
+        verifyCodeService.verifyCode(request.getPhone(), request.getCode(), VerifyCodeType.RESET_PASSWORD);
+
+        // 4. 获取分布式锁
+        String lockKey = RedisKeyConstants.buildResetPasswordLockKey(request.getPhone());
+        RLock lock = redissonClient.getLock(lockKey);
+
+        try {
+            // 尝试获取锁，最多等待3秒，锁10秒后自动释放
+            boolean isLocked = lock.tryLock(3, 10, TimeUnit.SECONDS);
+            if (!isLocked) {
+                log.warn("获取重置密码锁失败, phone={}", request.getPhone());
+                throw new BusinessException(ResultCode.RESET_PASSWORD_LOCK_FAILED);
+            }
+
+            // 5. 检查请求幂等性
+            checkRequestIdempotency(request.getRequestId());
+
+            // 6. 检查手机号是否已注册
+            User user = userService.getByPhone(request.getPhone());
+            if (user == null) {
+                log.warn("手机号未注册, phone={}", request.getPhone());
+                throw new BusinessException(ResultCode.PHONE_NOT_REGISTERED);
+            }
+
+            // 7. 检查账号状态
+            if (user.getStatus() == 0) {
+                log.warn("账号已被禁用, phone={}", request.getPhone());
+                throw new BusinessException(ResultCode.ACCOUNT_DISABLED);
+            }
+
+            // 8. 更新密码
+            user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+            userService.updateById(user);
+            log.info("密码重置成功, phone={}, userId={}", request.getPhone(), user.getId());
+
+            // 9. 删除验证码
+            verifyCodeService.deleteVerifyCode(request.getPhone(), VerifyCodeType.RESET_PASSWORD);
+
+            // 10. 标记请求ID已处理
+            markRequestIdProcessed(request.getRequestId());
+
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            log.error("获取重置密码锁被中断, phone={}", request.getPhone(), e);
+            throw new BusinessException(ResultCode.RESET_PASSWORD_LOCK_FAILED);
+        } finally {
+            // 释放锁
+            if (lock.isHeldByCurrentThread()) {
+                lock.unlock();
+                log.info("释放重置密码锁, phone={}", request.getPhone());
+            }
+        }
     }
 }
