@@ -62,6 +62,16 @@ public class MinioConfig {
     private String resumeUrlPrefix;
 
     /**
+     * 聊天文件存储桶名称
+     */
+    private String chatBucket;
+
+    /**
+     * 聊天文件访问URL前缀
+     */
+    private String chatUrlPrefix;
+
+    /**
      * 创建MinIO客户端
      */
     @Bean
@@ -75,7 +85,7 @@ public class MinioConfig {
     /**
      * 根据文件类型获取存储桶名称
      *
-     * @param fileType 文件类型：avatar-头像, resume-简历
+     * @param fileType 文件类型：avatar-头像, resume-简历, chat-聊天文件
      * @return 存储桶名称
      */
     public String getBucketByType(String fileType) {
@@ -83,6 +93,8 @@ public class MinioConfig {
             return avatarBucket != null ? avatarBucket : bucketName;
         } else if ("resume".equalsIgnoreCase(fileType)) {
             return resumeBucket != null ? resumeBucket : bucketName;
+        } else if ("chat".equalsIgnoreCase(fileType)) {
+            return chatBucket != null ? chatBucket : bucketName;
         }
         return bucketName;
     }
@@ -90,7 +102,7 @@ public class MinioConfig {
     /**
      * 根据文件类型获取URL前缀
      *
-     * @param fileType 文件类型：avatar-头像, resume-简历
+     * @param fileType 文件类型：avatar-头像, resume-简历, chat-聊天文件
      * @return URL前缀
      */
     public String getUrlPrefixByType(String fileType) {
@@ -98,7 +110,23 @@ public class MinioConfig {
             return avatarUrlPrefix != null ? avatarUrlPrefix : urlPrefix;
         } else if ("resume".equalsIgnoreCase(fileType)) {
             return resumeUrlPrefix != null ? resumeUrlPrefix : urlPrefix;
+        } else if ("chat".equalsIgnoreCase(fileType)) {
+            return chatUrlPrefix != null ? chatUrlPrefix : urlPrefix;
         }
         return urlPrefix;
+    }
+
+    /**
+     * 获取聊天文件存储桶
+     */
+    public String getChatBucket() {
+        return chatBucket != null ? chatBucket : bucketName;
+    }
+
+    /**
+     * 获取聊天文件URL前缀
+     */
+    public String getChatUrlPrefix() {
+        return chatUrlPrefix != null ? chatUrlPrefix : urlPrefix;
     }
 }
